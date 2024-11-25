@@ -23,6 +23,7 @@ public class robotTeleOp extends OpMode {
     boolean brakeButton = false;
     boolean rSB = false;
 
+    //TODO: add comments on this
     drivingMethods drive = new drivingMethods();
     autonomousMethods auto = new autonomousMethods();
     attachmentMethods attachment = new attachmentMethods();
@@ -30,7 +31,7 @@ public class robotTeleOp extends OpMode {
 
 
     @Override
-    public void init() {
+    public void init() { //TODO: add comments on this
         drive.init(hardwareMap);
         auto.init(hardwareMap);
         attachment.init(hardwareMap);
@@ -56,34 +57,54 @@ public class robotTeleOp extends OpMode {
 
     public void start() {
         ls.init(hardwareMap);
-    }
+    } //TODO: figure out why this exists.
 
     @Override
     public void loop() {
-        double lx = gamepad1.left_stick_x * 1.1; //Strafe variable
+
+        //TODO: Port this over to the functions (And make sure It works)
+        /*double lx = gamepad1.left_stick_x * 1.1; //Strafe variable
         double rx = -gamepad1.left_stick_y; //Forward and backward
         double ly = gamepad1.right_stick_x; //Turn right and left
         boolean turboButton = gamepad1.a;
+        drive.drive(rx,lx,ly,turboButton);*/
 
-        drive.drive(rx,lx,ly,turboButton);
 
-        if (!yPress) {
+        //call the functions that control the different functions of the robot
+        automatedActions(); //Put automated actions before others to prioritize them
+        intakeArm();
+        linearSlides();
+    }
+
+    public void normalDrive() {
+        //TODO: insert normal drive code into here
+    }
+
+    public void fieldCentricDrive() {
+        //TODO: insert field centric code into here
+    }
+
+    public void intakeArm() {
+        //This gives a value that will be 1 when right, -1 when left, and the middle when both.
+        double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
+        //Toggle the lift arm controlled by the input of the triggers
+        attachment.toggleLiftArm(liftArmMov, telemetry);
+
+        if (!yPress) { //if the automated action bound to Y is active, this doesn't run
+
+            //set intake power to 1 if b is pressed, -1 if x is pressed, and 0 if nothing is pressed.
             if (gamepad2.b) {
-                // auto.setAngle(90, 25,3000);
                 attachment.toggleIntake(1);
             } else if (gamepad2.x) {
                 attachment.toggleIntake(-1);
             } else {
                 attachment.toggleIntake(0);
             }
+
         }
+    }
 
-        double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
-        attachment.toggleLiftArm(liftArmMov, telemetry);
-
-        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry);
-
-
+    public void automatedActions() { //TODO: add comments on this
         if (gamepad2.y) {
             attachment.rotateLiftArm(1,1276,telemetry);
             attachment.toggleIntake(-0.2);
@@ -116,10 +137,13 @@ public class robotTeleOp extends OpMode {
         }
         telemetry.addData("slideContractTime", (getRuntime()-slideContractTime));
         telemetry.addData("slideContract", slideContract);
-
     }
 
-    public void stop() {
+    public void linearSlides() { //TODO: add comments on this
+        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry);
+    }
+
+    public void stop() { //TODO: add comments on this
         drive.setMode(true);
         attachment.resetServo();
         drive.setPower(0,0,0,0);
