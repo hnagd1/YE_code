@@ -1,7 +1,4 @@
 package org.firstinspires.ftc.teamcode;import com.qualcomm.robotcore.eventloop.opmode.OpMode;import com.qualcomm.robotcore.eventloop.opmode.TeleOp;import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
-
-
-
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
@@ -9,10 +6,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp
 public class robotTeleOp extends OpMode {
-
-    // Removable codeee
-    boolean armLifted;
-    boolean intakeOn;
 
     double yPressTime;
     boolean yPress;
@@ -31,28 +24,28 @@ public class robotTeleOp extends OpMode {
 
 
     @Override
-    public void init() { //TODO: add comments on this
+    public void init() {
+        //initialize functions with the hardware map
         drive.init(hardwareMap);
         auto.init(hardwareMap);
         attachment.init(hardwareMap);
         ls.init(hardwareMap);
-        telemetry.addData("Version", 1);
 
         // TODO: Port this over to auto
-        auto.setDriveAngle(0, 0.4);
-        try {
+        auto.setDriveAngle(0, 0.4); //TODO: make this strafe the correct direction
+        try { //wait 650 millis
             Thread.sleep(650);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        auto.stopMotors();
-        ls.extendLinearSlide(telemetry);
-        try {
+        auto.stopMotors(); //stops the movement
+        ls.extendLinearSlide(telemetry); //extend the slides
+        try { //sleep
             Thread.sleep(1200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        attachment.rotateLiftArm(1,2000,telemetry);
+        attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.
     }
 
     public void start() {
@@ -104,49 +97,52 @@ public class robotTeleOp extends OpMode {
         }
     }
 
-    public void automatedActions() { //TODO: add comments on this
-        if (gamepad2.y) {
-            attachment.rotateLiftArm(1,1276,telemetry);
-            attachment.toggleIntake(-0.2);
-            yPressTime = getRuntime();
+    public void automatedActions() {
+        //ACTION Y
+        if (gamepad2.y) { //When Y is pressed, we want it to go to the correct position, and dump the contents
+            attachment.rotateLiftArm(1,1276,telemetry); //this takes it to the correct position (calibrated with init pos)
+            attachment.toggleIntake(-0.2); //dumps
+            yPressTime = getRuntime(); //saves the runtime at the time of press
             yPress = true;
         }
-
-        if ((getRuntime()-yPressTime>1)&yPress) {
-            attachment.toggleIntake(0);
-            yPress = false;
+        //we need to give the arm a second to go into place before dumping
+        if ((getRuntime()-yPressTime>1)&yPress) { //this checks if its been more than 1 second since y has been pressed
+            attachment.toggleIntake(0); //stop intake
+            yPress = false; //this is so this doesn't run again
         }
 
-        if (gamepad2.a) {
+        //ACTION A
+        if (gamepad2.a) { //when a is pressed, we want to dump the basket
             ls.basketPos(0);
             aPressTime = getRuntime();
             aPress = true;
         }
-
+        //we want to give the basket around 0.8 seconds to dump before retracing the slides
         if ((getRuntime()-aPressTime>0.8)&aPress) {
-            aPress = false;
+            aPress = false; //this is so this doesn't run again
             ls.basketPos(1);
-            ls.contractLinearSlide(telemetry);
+            ls.contractLinearSlide(telemetry); //TODO: Make sure this works after linear slide fix
             slideContractTime = getRuntime();
-            slideContract = true;
+            slideContract = true; //make sure the next actions can happen
         }
 
         if ((getRuntime()-slideContractTime>1.2)&slideContract) {
-            slideContract = false;
-            ls.basketPos(0.85);
+            slideContract = false; //this is so this doesn't run again
+            ls.basketPos(0.85); //get the basket into place after dropping
         }
-        telemetry.addData("slideContractTime", (getRuntime()-slideContractTime));
-        telemetry.addData("slideContract", slideContract);
     }
 
-    public void linearSlides() { //TODO: add comments on this
+    public void linearSlides() {
+        //This calls the ls loop with all of the required parameters
+        //slide contract is required so it doesn't cancel out the automated actions.
+        //Without it, this will set motor powers to 0 when they have to be at 1
         ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry);
     }
 
-    public void stop() { //TODO: add comments on this
-        drive.setMode(true);
-        attachment.resetServo();
-        drive.setPower(0,0,0,0);
+    public void stop() { //this needs to stop everything
+        drive.setMode(true); //this sets the motors to brake
+        attachment.resetServo(); //reset the servos
+        drive.setPower(0,0,0,0); //Set motor powers to 0
     }
 }
 
