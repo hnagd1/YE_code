@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class attachmentMethods {
 
-    // Creates a varible for Motor 4 (Arm motor), continuous rotating severo 0 (Intake servo), and Servo 1 (use changes, mostly used as an arm joint)
+    // Creates a variable for Motor 4 (Arm motor), continuous rotating severo 0 (Intake servo), and Servo 1 (use changes, mostly used as an arm joint)
     DcMotor Motor4;
     CRServo Servo0;
     Servo Servo1;
@@ -23,11 +23,11 @@ public class attachmentMethods {
         Servo0 = hardwareMap.get(CRServo.class, "Servo0");
         Servo1 = hardwareMap.get(Servo.class, "Servo1");
 
-        // Sets the starting diriction of the arm motor and intake servo, this will change as the drivers controle the robot
+        // Sets the starting diriction of the arm motor and intake servo, this will change as the drivers control the robot
         Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
         Servo0.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        // Sets the zero power behavior to BRAKE in an effort to stop the arm from moving when inputs are not givin to it. - Effectiveness is unknown
+        // Sets the zero power behavior to BRAKE in an effort to stop the arm from moving when inputs are not giving to it. - Effectiveness is unknown
         Motor4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Resets the encoder to position 0 and sets the mode so that the encoder isn't interfering with Motor inputs
@@ -44,62 +44,62 @@ public class attachmentMethods {
 
         // Checks if the triggers value is more than 0 (left trigger is being pressed down more than right trigger)
         if (triggers > 0) {
-            // Sets the diriction of the motor to forward, or moving away from the robot
+            // Sets the direction of the motor to forward, or moving away from the robot
             Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
             Motor4.setPower(Math.abs(triggers));
-            telemetry.addData("Movment","up");
+            telemetry.addData("Movement","up");
         // Checks if the triggers value is less than 0 (right trigger is being pressed down more than left trigger)
         } else if (triggers < 0) {
-            // Sets the diriction of the motor to REVERSE, or moving to the robot
+            // Sets the direction of the motor to REVERSE, or moving to the robot
             Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
             // Checks if the encoder value is less than -1376
             if (Motor4.getCurrentPosition()<-1376) {
-                // If the above requirments are meet than the motors will move in the absoulte value of the triggers value (negtive Motor powers isn't possible, this is why we switch dirictions)
+                // If the above requirements are meet than the motors will move in the absolute value of the triggers value (negative Motor powers isn't possible, this is why we switch directions)
                 Motor4.setPower(Math.abs(triggers));
             } else {
-                // You have gone beyond the range of motion and may not move anymore in this diriction, aka setting power to 0 before it can move
+                // You have gone beyond the range of motion and may not move anymore in this direction, aka setting power to 0 before it can move
                 Motor4.setPower(0);
             }
-            telemetry.addData("Movment","down");
-        // Checks if triggers are not presed down or presed down very little
+            telemetry.addData("Movement","down");
+        // Checks if triggers are not pressed down or pressed down very little
         } else if (triggers < 0.1 && triggers > -0.1) {
-            // Sets power to 0 because no buttons are being prssed and the motor should thus not be moving
+            // Sets power to 0 because no buttons are being pressed and the motor should thus not be moving
             Motor4.setPower(0);
-            telemetry.addData("Movment","none");
+            telemetry.addData("Movement","none");
 
         }
         telemetry.addData("Position", Motor4.getCurrentPosition());
     }
 
-    // Function is used for automatic arm movment without any driver inteaction
+    // Function is used for automatic arm movement without any driver interaction
     public void rotateLiftArm(int direction, int position, Telemetry telemetry) {
-        // The desired diriction (as an int), position (as an int), and telemetry class are passed into this function
+        // The desired direction (as an int), position (as an int), and telemetry class are passed into this function
         // TODO: switch the direction to a boolean, as we are only going to be passing in 1 or 0
 
-        // Checks if a 1 is passed in via the direction paramter
+        // Checks if a 1 is passed in via the direction parameter
         if (direction == 1) {
-            // Sets the arm diriction to FORWARD, which is moving away from the robot
+            // Sets the arm direction to FORWARD, which is moving away from the robot
             Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
-        // Checks if a 0 is passed in via the direction paramter (really any number other than 1 would work, but for best practices just use 0)
+        // Checks if a 0 is passed in via the direction parameter (really any number other than 1 would work, but for best practices just use 0)
         } else {
-            // Sets the arm diriction to REVERSE, which is moving toward the robot
+            // Sets the arm direction to REVERSE, which is moving toward the robot
             Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
         }
         // Uses the passed in position to set the encoder target position
         Motor4.setTargetPosition(position);
         // Sets the Arm motor to run to position mode, which will move the arm until it reaches the target position
         Motor4.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        // Applys power to the Motor and waits until it is done moving
+        // Applies power to the Motor and waits until it is done moving
         while(Motor4.isBusy()) {Motor4.setPower(1);}
-        // After motor reaches desitnation it sets the power to 0 and comes to a stop
+        // After motor reaches destination it sets the power to 0 and comes to a stop
         Motor4.setPower(0);
         // Resets the encoder value to 0
         Motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    // Used to control the diriction of the intake motor
+    // Used to control the direction of the intake motor
     public void toggleIntake(double power) {
-        // Takes a power paramter which will controle the intake wheels power
+        // Takes a power parameter which will control the intake wheels power
 
         // Checks if power that is passed in to 0 or none
         if (power == 0) {
@@ -107,12 +107,12 @@ public class attachmentMethods {
             Servo0.setPower(0);
         // Checks if the passed in power is greater than 0
         } else if (power > 0) {
-            // Sets diriction to forward and runs using the passed in power value
+            // Sets direction to forward and runs using the passed in power value
             Servo0.setDirection(DcMotorSimple.Direction.FORWARD);
             Servo0.setPower(power);
-        // If the power value is negitive this is called
+        // If the power value is negative this is called
         } else {
-            // Sets diriction to REVERSE and runs using the passed in power value
+            // Sets direction to REVERSE and runs using the passed in power value
             Servo0.setDirection(DcMotorSimple.Direction.REVERSE);
             Servo0.setPower(Math.abs(power));
         }
