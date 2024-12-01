@@ -83,9 +83,9 @@ public class drivingMethods {
 
     }
 
-    public void drive(double lx,double ly, double rx, boolean turboButton) {
+    public void drive(double lx,double ly, double rx) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), and rx (right_stick_x)
-        // TODO: remove turbo button as we are not using that
+
 
         // Sets the Motor Speed to 1, because we need to be speedy
         motorSpeed = 1;

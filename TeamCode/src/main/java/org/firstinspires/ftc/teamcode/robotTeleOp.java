@@ -1,4 +1,9 @@
-package org.firstinspires.ftc.teamcode;import com.qualcomm.robotcore.eventloop.opmode.OpMode;import com.qualcomm.robotcore.eventloop.opmode.TeleOp;import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
+package org.firstinspires.ftc.teamcode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
+import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
+import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 
@@ -15,6 +20,8 @@ public class robotTeleOp extends OpMode {
     boolean slideContract;
     boolean brakeButton = false;
     boolean rSB = false;
+
+
 
     //TODO: add comments on this
     drivingMethods drive = new drivingMethods();
@@ -62,15 +69,20 @@ public class robotTeleOp extends OpMode {
         boolean turboButton = gamepad1.a;
         drive.drive(rx,lx,ly,turboButton);*/
 
-
+        //for test:
+        robotCentricDrive();
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
         intakeArm();
         linearSlides();
     }
 
-    public void normalDrive() {
-        //TODO: insert normal drive code into here
+    public void robotCentricDrive() {
+        double lx = gamepad1.left_stick_x * 1.1;
+        double rx = gamepad1.right_stick_x;
+        double ry = -gamepad1.right_stick_y;
+
+        drive.drive(lx, rx, ry);
     }
 
     public void fieldCentricDrive() {
