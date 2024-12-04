@@ -21,6 +21,7 @@ public class robotTeleOp extends OpMode {
     boolean brakeButton = false;
     boolean rSB = false;
 
+    boolean IMUReset;
 
 
     //TODO: add comments on this
@@ -61,16 +62,8 @@ public class robotTeleOp extends OpMode {
 
     @Override
     public void loop() {
-
-        //TODO: Port this over to the functions (And make sure It works)
-        /*double lx = gamepad1.left_stick_x * 1.1; //Strafe variable
-        double rx = -gamepad1.left_stick_y; //Forward and backward
-        double ly = gamepad1.right_stick_x; //Turn right and left
-        boolean turboButton = gamepad1.a;
-        drive.drive(rx,lx,ly,turboButton);*/
-
         //for test:
-        robotCentricDrive();
+        fieldCentricDrive();
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
         intakeArm();
@@ -79,14 +72,19 @@ public class robotTeleOp extends OpMode {
 
     public void robotCentricDrive() {
         double lx = gamepad1.left_stick_x * 1.1;
-        double rx = gamepad1.right_stick_x;
-        double ry = -gamepad1.right_stick_y;
+        double ly = gamepad1.left_stick_y;
+        double rx = -gamepad1.right_stick_x;
 
-        drive.drive(lx, rx, ry);
+        drive.drive(lx, ly, rx);
     }
 
     public void fieldCentricDrive() {
         //TODO: insert field centric code into here
+        IMUReset = gamepad1.options;
+        double lx = gamepad1.left_stick_x * 1.1;
+        double ly = gamepad1.left_stick_y;
+        double rx = -gamepad1.right_stick_x;
+        drive.fieldCentric(lx, ly, rx, IMUReset);
     }
 
     public void intakeArm() {

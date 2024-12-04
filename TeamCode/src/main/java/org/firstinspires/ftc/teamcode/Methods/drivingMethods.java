@@ -50,7 +50,8 @@ public class drivingMethods {
         Motor3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // This sets the left motors to reverse which fixes the math stuff located in the drive method
-        Motor0.setDirection(DcMotorSimple.Direction.REVERSE);
+        //TODO: IF DRIVE NOT WORKING REVERSE MOTOR 0
+        Motor0.setDirection(DcMotorSimple.Direction.FORWARD);
         Motor3.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Sets up the IMU
@@ -91,10 +92,10 @@ public class drivingMethods {
         motorSpeed = 1;
 
         // Uses math to decide the power of each motor in order to make it drive in any direction that is passed in by the lx, ly, and rx varibles
-        power0 = motorSpeed * (ly + rx + lx);
-        power1 = motorSpeed * (-ly + (rx - lx));
+        power0 = motorSpeed * (ly + rx - lx);
+        power1 = motorSpeed * (-ly + rx - lx);
         power2 = motorSpeed * (-ly + rx + lx);
-        power3 = motorSpeed * (ly + (rx - lx));
+        power3 = motorSpeed * (ly + rx + lx);
 
         // Uses these power varibles to call the setPower method which will set the power of each motor
         setPower(power0, power1, power2, power3);

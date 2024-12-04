@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
 
-@TeleOp
+//@TeleOp
 public class robotTeleOpFieldCentric extends OpMode {
 
     boolean brakeButton = false;
