@@ -14,10 +14,10 @@ public class drivingMethods {
 
     // Creates a varible for each motor of type DcMotor, this will allows to use the motors later in the code
 
-    private DcMotor Motor0;
-    private DcMotor Motor1;
-    private DcMotor Motor2;
-    private DcMotor Motor3;
+    private DcMotor fL;
+    private DcMotor fR;
+    private DcMotor bR;
+    private DcMotor bL;
 
     // Motor Speed is not a varible that was been widely implemented in the code
     // TODO: Fix this ^^^
@@ -26,10 +26,10 @@ public class drivingMethods {
     /* Power varibles, these will be used to set the power of each motor, the reason we do this instead of just
     setting the power in the drive Method is so that we can seprate that from the set power method which is easier to read
     and makes more sense in*/
-    double power0;
-    double power1;
-    double power2;
-    double power3;
+    double powerFL;
+    double powerFR;
+    double powerBR;
+    double powerBL;
 
     // sets up the imu, not much to explain here
     private IMU imu;
@@ -37,22 +37,22 @@ public class drivingMethods {
     public void init(HardwareMap hardwareMap) {
 
         // Inits all four motors, allowing us to use them later in the code
-        Motor0 = hardwareMap.get(DcMotor.class, "Motor0");
-        Motor1 = hardwareMap.get(DcMotor.class, "Motor1");
-        Motor2 = hardwareMap.get(DcMotor.class, "Motor2");
-        Motor3 = hardwareMap.get(DcMotor.class, "Motor3");
+        fL = hardwareMap.get(DcMotor.class, "Motor0");
+        fR = hardwareMap.get(DcMotor.class, "Motor1");
+        bR = hardwareMap.get(DcMotor.class, "Motor2");
+        bL = hardwareMap.get(DcMotor.class, "Motor3");
 
         // Sets the ZeroPowerBehavior to BRAKE which will stop the robot from drifting, this can be switched by the driven using the setMode method
         // TODO: reimplement the setMode method in robotTeleOp.java
-        Motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Motor3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // This sets the left motors to reverse which fixes the math stuff located in the drive method
         //TODO: IF DRIVE NOT WORKING REVERSE MOTOR 0
-        Motor0.setDirection(DcMotorSimple.Direction.FORWARD);
-        Motor3.setDirection(DcMotorSimple.Direction.REVERSE);
+        fL.setDirection(DcMotorSimple.Direction.FORWARD);
+        bL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Sets up the IMU
         imu = hardwareMap.get(IMU.class, "imu");
@@ -69,17 +69,17 @@ public class drivingMethods {
         // The robotTeleOp will pass in weather the option button is pressed, this is the isBRAKE boolean
         if (isBRAKE) {
             // If the option button is pressed, this will set the ZeroPowerBehavior to BRAKE which will stop the wheels from drifting
-            Motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            Motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            Motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            Motor3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         } else {
             // If the option button is not pressed, this will set the ZeroPowerBehavior to FLOAT which will allow the wheels to drift
             // TODO: reimplement this
-            Motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            Motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            Motor2.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-            Motor3.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            fL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            fR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            bR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
     }
@@ -92,13 +92,13 @@ public class drivingMethods {
         motorSpeed = 1;
 
         // Uses math to decide the power of each motor in order to make it drive in any direction that is passed in by the lx, ly, and rx varibles
-        power0 = motorSpeed * (ly + rx - lx);
-        power1 = motorSpeed * (-ly + rx - lx);
-        power2 = motorSpeed * (-ly + rx + lx);
-        power3 = motorSpeed * (ly + rx + lx);
+        powerFL = motorSpeed * (ly + rx - lx);
+        powerFR = motorSpeed * (-ly + rx - lx);
+        powerBR = motorSpeed * (-ly + rx + lx);
+        powerBL = motorSpeed * (ly + rx + lx);
 
         // Uses these power varibles to call the setPower method which will set the power of each motor
-        setPower(power0, power1, power2, power3);
+        setPower(powerFL, powerFR, powerBR, powerBL);
     }
 
     public void fieldCentric(double lx, double ly, double rx, boolean IMUReset) {
@@ -134,10 +134,10 @@ public class drivingMethods {
     public void setPower(double Motor0, double Motor1, double Motor2, double Motor3) {
 
         // Sets the power of each motor using the varibles that were passed into this method
-        this.Motor0.setPower(Motor0);
-        this.Motor1.setPower(Motor1);
-        this.Motor2.setPower(Motor2);
-        this.Motor3.setPower(Motor3);
+        this.fL.setPower(Motor0);
+        this.fR.setPower(Motor1);
+        this.bR.setPower(Motor2);
+        this.bL.setPower(Motor3);
 
     }
 

@@ -47,7 +47,7 @@ public class robotTeleOp extends OpMode {
             throw new RuntimeException(e);
         }
         auto.stopMotors(); //stops the movement
-        ls.extendLinearSlide(telemetry); //extend the slides
+        ls.runLinearSlide(0.7,telemetry); //extend the slides
         try { //sleep
             Thread.sleep(1200);
         } catch (InterruptedException e) {
@@ -55,10 +55,6 @@ public class robotTeleOp extends OpMode {
         }
         attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.
     }
-
-    public void start() {
-        ls.init(hardwareMap);
-    } //TODO: figure out why this exists.
 
     @Override
     public void loop() {
@@ -131,21 +127,19 @@ public class robotTeleOp extends OpMode {
         if ((getRuntime()-aPressTime>0.8)&aPress) {
             aPress = false; //this is so this doesn't run again
             ls.basketPos(1);
-            ls.contractLinearSlide(telemetry); //TODO: Make sure this works after linear slide fix
+            ls.runLinearSlide(-0.7,telemetry);
             slideContractTime = getRuntime();
             slideContract = true; //make sure the next actions can happen
         }
 
         if ((getRuntime()-slideContractTime>1.2)&slideContract) {
+            ls.runLinearSlide(0.0,telemetry);
             slideContract = false; //this is so this doesn't run again
             ls.basketPos(0.85); //get the basket into place after dropping
         }
     }
 
     public void linearSlides() {
-        //This calls the ls loop with all of the required parameters
-        //slide contract is required so it doesn't cancel out the automated actions.
-        //Without it, this will set motor powers to 0 when they have to be at 1
         ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry);
     }
 
