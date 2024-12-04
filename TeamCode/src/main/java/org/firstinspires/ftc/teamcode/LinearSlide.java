@@ -36,44 +36,44 @@ public class LinearSlide {
     }
 
     public void loop(boolean LB, boolean RB, boolean active, Telemetry telemetry) {
-        if (active) {
+        /* This is the main loop for linear slides. This loop contains 4 operands:
+        bool LB - Left bumper on gamepad 2. Raises the linear slides
+        bool RB - Right bumper on gamepad 2 Lowers the linear slides
+        bool active - used to disable the linear slides when they are automatically being lowered
+        telemetry - this is so we can use telemetry in this function
+         */
+        if (active) { //Checks if this loop is active
             if (LB) {
+                //Set the linear slide power to 0.7 if LB is pressed to raise
                 runLinearSlide(0.7,telemetry);
-            }
-            if (RB) {
+            } else if (RB) {
+                //Set the linear slide power to -0.7 if RB is pressed to lower
                 runLinearSlide(-0.7,telemetry);
-            }
-            if (!LB && !RB) {
+            } else {
+                //stop the linear slides if nothing is being pressed
                 runLinearSlide(0.0,telemetry);
             }
         }
     }
 
     public void runLinearSlide(Double power, Telemetry telemetry) {
-        if (power < 0) {
+        if (power < 0) { //sets the target position based on if it is negative or positive
             Motor5.setTargetPosition(0);
             Motor6.setTargetPosition(0);
         } else {
             Motor5.setTargetPosition(3100);
             Motor6.setTargetPosition(3100);
         }
+        //sets it to the abs of power so that the power is not negative when going down
         Motor5.setPower(Math.abs(power));
         Motor6.setPower(Math.abs(power));
     }
 
-    public void basketPos(double pos) {
+    public void basketPos(double pos) { //The purpose of this function is so that the main teleop can set the position of the servo
         Servo1.setPosition(pos);
     }
 
-    public void basketServo(boolean x) {
-        if (x) {
-            Servo1.setPosition(1);
-        } else {
-            Servo1.setPosition(0);
-        }
-    }
-
-    public void stop() {
+    public void stop() { //sets the linear slide powers to 0
         Motor5.setPower(0);
         Motor6.setPower(0);
     }

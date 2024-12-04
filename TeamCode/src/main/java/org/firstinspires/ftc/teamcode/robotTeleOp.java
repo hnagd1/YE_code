@@ -147,6 +147,7 @@ public class robotTeleOp extends OpMode {
         drive.setMode(true); //this sets the motors to brake
         attachment.resetServo(); //reset the servos
         drive.setPower(0,0,0,0); //Set motor powers to 0
+        ls.stop(); //stops the linear slides
     }
 }
 
