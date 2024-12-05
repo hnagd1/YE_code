@@ -40,7 +40,7 @@ public class robotTeleOp extends OpMode {
         ls.init(hardwareMap);
 
         // TODO: Port this over to auto
-        auto.setDriveAngle(0, 0.4); //TODO: make this strafe the correct direction
+        /*auto.setDriveAngle(0, 0.4); //TODO: make this strafe the correct direction
         try { //wait 650 millis
             Thread.sleep(650);
         } catch (InterruptedException e) {
@@ -53,7 +53,7 @@ public class robotTeleOp extends OpMode {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.
+        attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.*/
     }
 
     @Override

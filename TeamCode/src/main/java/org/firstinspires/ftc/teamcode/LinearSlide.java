@@ -42,6 +42,7 @@ public class LinearSlide {
         bool active - used to disable the linear slides when they are automatically being lowered
         telemetry - this is so we can use telemetry in this function
          */
+        telemetry.addData("LS",Motor5.getCurrentPosition());
         if (active) { //Checks if this loop is active
             if (LB) {
                 //Set the linear slide power to 0.7 if LB is pressed to raise
@@ -60,7 +61,7 @@ public class LinearSlide {
         if (power < 0) { //sets the target position based on if it is negative or positive
             Motor5.setTargetPosition(0);
             Motor6.setTargetPosition(0);
-        } else {
+        } else if (power > 0) {
             Motor5.setTargetPosition(3100);
             Motor6.setTargetPosition(3100);
         }
