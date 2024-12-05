@@ -51,7 +51,7 @@ public class robotTeleOpDrive extends OpMode {
         double lx = gamepad1.left_stick_x * 1.1;
         double ly = gamepad1.left_stick_y;
         double rx = -gamepad1.right_stick_x;
-        drive.fieldCentric(lx, ly, rx, IMUReset);
+        drive.fieldCentric(lx, ly, rx, IMUReset, telemetry);
     }
 
     public void stop() { //this needs to stop everything

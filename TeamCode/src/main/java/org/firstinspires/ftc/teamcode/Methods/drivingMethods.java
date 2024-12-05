@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 
-
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class drivingMethods {
@@ -50,8 +50,9 @@ public class drivingMethods {
         bL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // This sets the left motors to reverse which fixes the math stuff located in the drive method
-        //TODO: IF DRIVE NOT WORKING REVERSE MOTOR 0
         fL.setDirection(DcMotorSimple.Direction.FORWARD);
+        fR.setDirection(DcMotorSimple.Direction.FORWARD);
+        bR.setDirection(DcMotorSimple.Direction.FORWARD);
         bL.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // Sets up the IMU
@@ -59,7 +60,7 @@ public class drivingMethods {
 
         // Tells the code what direction the Control Hub is facing
         RevHubOrientationOnRobot RevOrientation =
-                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,RevHubOrientationOnRobot.UsbFacingDirection.RIGHT);
+                new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT,RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD);
 
         // Finalizes the IMU initialization
         imu.initialize(new IMU.Parameters(RevOrientation));
@@ -101,7 +102,7 @@ public class drivingMethods {
         setPower(powerFL, powerFR, powerBR, powerBL);
     }
 
-    public void fieldCentric(double lx, double ly, double rx, boolean IMUReset) {
+    public void fieldCentric(double lx, double ly, double rx, boolean IMUReset, Telemetry telemetry) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), rx (right_stick_x), and IMUReset (options button)
 
         //TODO:Motor Speed implemented soon
@@ -116,16 +117,23 @@ public class drivingMethods {
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
 
         // TODO: explain this math
-        double rotX = lx * Math.cos(-botHeading) - ly * Math.sin(-botHeading);
-        double rotY = lx * Math.sin(-botHeading) + ly * Math.cos(-botHeading);
+        double rotX = lx * Math.cos(botHeading) - ly * Math.sin(botHeading);
+        double rotY = lx * Math.sin(botHeading) + ly * Math.cos(botHeading);
+        /*telemetry.addData("lx",lx);
+        telemetry.addData("ly",ly);
+        telemetry.addData("rotX",rotX);
+        telemetry.addData("rotY",rotY);
+        telemetry.addData("rot",-botHeading);*/
 
-        // Deminator is basicly making sure the Motor values are all moving propetinaly and not execding 1, I think
+
+
+        // Dominator is basically making sure the Motor values are all moving proportionally and not exceeding 1, I think
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
-        double power0 = (rotY + rotX + rx) / denominator;
-        double power3 = (rotY - rotX + rx) / denominator;
-        double power1 = (rotY - rotX - rx) / denominator;
-        double power2 = (rotY + rotX - rx) / denominator;
+        double power0 = (rotY + rx - rotX) / denominator * 0.3;
+        double power1 = (-rotY + rx - rotX) / denominator * 0.3;
+        double power2 = (-rotY + rx + rotX) / denominator * 0.3;
+        double power3 = (rotY + rx + rotX) / denominator * 0.3;
 
         // Uses these power varibles to call the setPower method which will set the power of each motor
         setPower(power0, power1, power2, power3);
