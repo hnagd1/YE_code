@@ -64,6 +64,7 @@ public class robotTeleOp extends OpMode {
         automatedActions(); //Put automated actions before others to prioritize them
         intakeArm();
         linearSlides();
+        attachment.jointMovement(gamepad2.right_stick_y);
     }
 
     public void robotCentricDrive() {

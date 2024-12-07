@@ -37,6 +37,7 @@ public class attachmentMethods {
 
     // Function is used for driver controled arm movments
     public void toggleLiftArm(double triggers, Telemetry telemetry) {
+        telemetry.addData("Pos:", Motor4.getCurrentPosition());
         /* This function takes the parameters:
                 1. Triggers, the value of gamepad 2 left trigger - gamepad 2 right trigger
                 2. Telemetry, a class used to write to the console. Required to be passed in as this function isn't part of a OpMode
@@ -45,15 +46,15 @@ public class attachmentMethods {
         // Checks if the triggers value is more than 0 (left trigger is being pressed down more than right trigger)
         if (triggers > 0) {
             // Sets the direction of the motor to forward, or moving away from the robot
-            Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
+            Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
             Motor4.setPower(Math.abs(triggers));
             telemetry.addData("Movement","up");
         // Checks if the triggers value is less than 0 (right trigger is being pressed down more than left trigger)
         } else if (triggers < 0) {
             // Sets the direction of the motor to REVERSE, or moving to the robot
-            Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
+            Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
             // Checks if the encoder value is less than -1376
-            if (Motor4.getCurrentPosition()<-1376) {
+            if (Motor4.getCurrentPosition()<1000) {
                 // If the above requirements are meet than the motors will move in the absolute value of the triggers value (negative Motor powers isn't possible, this is why we switch directions)
                 Motor4.setPower(Math.abs(triggers));
             } else {
@@ -116,6 +117,10 @@ public class attachmentMethods {
             Servo0.setDirection(DcMotorSimple.Direction.REVERSE);
             Servo0.setPower(Math.abs(power));
         }
+    }
+
+    public void jointMovement(double ry2) {
+        Servo1.setPosition(Math.abs(ry2));
     }
 
     // Used for servo1 init stuff

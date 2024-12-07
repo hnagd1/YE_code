@@ -104,7 +104,7 @@ public class drivingMethods {
 
     public void fieldCentric(double lx, double ly, double rx, boolean IMUReset, Telemetry telemetry) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), rx (right_stick_x), and IMUReset (options button)
-
+        bL.setDirection(DcMotorSimple.Direction.FORWARD);
         //TODO:Motor Speed implemented soon
         double motorSpeed = 1;
 
@@ -119,21 +119,21 @@ public class drivingMethods {
         // TODO: explain this math
         double rotX = lx * Math.cos(botHeading) - ly * Math.sin(botHeading);
         double rotY = lx * Math.sin(botHeading) + ly * Math.cos(botHeading);
-        /*telemetry.addData("lx",lx);
+        telemetry.addData("lx",lx);
         telemetry.addData("ly",ly);
         telemetry.addData("rotX",rotX);
         telemetry.addData("rotY",rotY);
-        telemetry.addData("rot",-botHeading);*/
+        telemetry.addData("rot",-botHeading);
 
 
 
         // Dominator is basically making sure the Motor values are all moving proportionally and not exceeding 1, I think
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
-        double power0 = (rotY + rx - rotX) / denominator * 0.3;
-        double power1 = (-rotY + rx - rotX) / denominator * 0.3;
-        double power2 = (-rotY + rx + rotX) / denominator * 0.3;
-        double power3 = (rotY + rx + rotX) / denominator * 0.3;
+        double power0 = (rotY + rx - rotX) / denominator * 0.9;
+        double power1 = (-rotY + rx - rotX) / denominator * 0.9;
+        double power2 = (-rotY + rx + rotX) / denominator * 0.9;
+        double power3 = (rotY + rx + rotX) / denominator * 0.9;
 
         // Uses these power varibles to call the setPower method which will set the power of each motor
         setPower(power0, power1, power2, power3);
@@ -142,10 +142,10 @@ public class drivingMethods {
     public void setPower(double Motor0, double Motor1, double Motor2, double Motor3) {
 
         // Sets the power of each motor using the varibles that were passed into this method
-        this.fL.setPower(Motor0);
-        this.fR.setPower(Motor1);
-        this.bR.setPower(Motor2);
-        this.bL.setPower(Motor3);
+        fL.setPower(Motor0);
+        fR.setPower(Motor1);
+        bR.setPower(Motor2);
+        bL.setPower(Motor3);
 
     }
 
