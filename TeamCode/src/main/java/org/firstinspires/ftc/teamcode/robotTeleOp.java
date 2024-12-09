@@ -59,12 +59,12 @@ public class robotTeleOp extends OpMode {
     @Override
     public void loop() {
         //for test:
-        fieldCentricDrive();
+        robotCentricDrive();
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
         intakeArm();
         linearSlides();
-        attachment.jointMovement(gamepad2.right_stick_y);
+        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
     }
 
     public void robotCentricDrive() {
@@ -72,7 +72,7 @@ public class robotTeleOp extends OpMode {
         double ly = gamepad1.left_stick_y;
         double rx = -gamepad1.right_stick_x;
 
-        drive.drive(lx, ly, rx);
+        drive.drive(lx, ly, rx, gamepad1.right_trigger);
     }
 
     public void fieldCentricDrive() {
@@ -81,7 +81,7 @@ public class robotTeleOp extends OpMode {
         double lx = gamepad1.left_stick_x * 1.1;
         double ly = gamepad1.left_stick_y;
         double rx = -gamepad1.right_stick_x;
-        drive.fieldCentric(lx, ly, rx, IMUReset, telemetry);
+        drive.fieldCentric(lx, ly, rx, gamepad1.right_trigger, IMUReset, telemetry);
     }
 
     public void intakeArm() {

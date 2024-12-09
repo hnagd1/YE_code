@@ -119,8 +119,20 @@ public class attachmentMethods {
         }
     }
 
-    public void jointMovement(double ry2) {
-        Servo1.setPosition(Math.abs(ry2));
+    public void jointMovement(boolean dpd, boolean dpu, Telemetry telemetry) {
+        // Function passes in dpd (boolean of if d-pad down is preased) and dpu (boolean of if d-pad up is preased) and the telemetry class
+        if (dpd) {
+            Servo1.setPosition(Servo1.getPosition()-0.0025);
+        } else if (dpu) {
+            Servo1.setPosition(Servo1.getPosition()+0.0025);
+        } else {
+            Servo1.setPosition(Servo1.getPosition());
+        }
+        telemetry.addData("Servo", Servo1.getPosition());
+    }
+
+    public void buttonMovment() {
+
     }
 
     // Used for servo1 init stuff

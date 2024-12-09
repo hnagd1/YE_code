@@ -53,7 +53,7 @@ public class drivingMethods {
         fL.setDirection(DcMotorSimple.Direction.FORWARD);
         fR.setDirection(DcMotorSimple.Direction.FORWARD);
         bR.setDirection(DcMotorSimple.Direction.FORWARD);
-        bL.setDirection(DcMotorSimple.Direction.REVERSE);
+        bL.setDirection(DcMotorSimple.Direction.FORWARD);
 
         // Sets up the IMU
         imu = hardwareMap.get(IMU.class, "imu");
@@ -85,12 +85,12 @@ public class drivingMethods {
 
     }
 
-    public void drive(double lx,double ly, double rx) {
+    public void drive(double lx,double ly, double rx, double speed) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), and rx (right_stick_x)
 
 
         // Sets the Motor Speed to 1, because we need to be speedy
-        motorSpeed = 1;
+        motorSpeed = (1 - 0.9 * speed);
 
         // Uses math to decide the power of each motor in order to make it drive in any direction that is passed in by the lx, ly, and rx varibles
         powerFL = motorSpeed * (ly + rx - lx);
@@ -102,9 +102,9 @@ public class drivingMethods {
         setPower(powerFL, powerFR, powerBR, powerBL);
     }
 
-    public void fieldCentric(double lx, double ly, double rx, boolean IMUReset, Telemetry telemetry) {
+    public void fieldCentric(double lx, double ly, double rx, double speed, boolean IMUReset, Telemetry telemetry) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), rx (right_stick_x), and IMUReset (options button)
-        bL.setDirection(DcMotorSimple.Direction.FORWARD);
+
         //TODO:Motor Speed implemented soon
         double motorSpeed = 1;
 
@@ -130,10 +130,10 @@ public class drivingMethods {
         // Dominator is basically making sure the Motor values are all moving proportionally and not exceeding 1, I think
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
-        double power0 = (rotY + rx - rotX) / denominator * 0.9;
-        double power1 = (-rotY + rx - rotX) / denominator * 0.9;
-        double power2 = (-rotY + rx + rotX) / denominator * 0.9;
-        double power3 = (rotY + rx + rotX) / denominator * 0.9;
+        double power0 = (rotY + rx - rotX) / denominator * (1 - 0.9 * speed);
+        double power1 = (-rotY + rx - rotX) / denominator * (1 - 0.9 * speed);
+        double power2 = (-rotY + rx + rotX) / denominator * (1 - 0.9 * speed);
+        double power3 = (rotY + rx + rotX) / denominator * (1 - 0.9 * speed);
 
         // Uses these power varibles to call the setPower method which will set the power of each motor
         setPower(power0, power1, power2, power3);
