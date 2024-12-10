@@ -54,7 +54,7 @@ public class attachmentMethods {
             // Sets the direction of the motor to REVERSE, or moving to the robot
             Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
             // Checks if the encoder value is less than -1376
-            if (Motor4.getCurrentPosition()<1000) {
+            if (Motor4.getCurrentPosition()<-3100) {
                 // If the above requirements are meet than the motors will move in the absolute value of the triggers value (negative Motor powers isn't possible, this is why we switch directions)
                 Motor4.setPower(Math.abs(triggers));
             } else {
@@ -131,9 +131,7 @@ public class attachmentMethods {
         telemetry.addData("Servo", Servo1.getPosition());
     }
 
-    public void buttonMovment() {
-
-    }
+    public void setServoPosition(double position) {Servo1.setPosition(position);}
 
     // Used for servo1 init stuff
     // TODO: confirm where this is still being used

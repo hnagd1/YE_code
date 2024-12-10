@@ -67,6 +67,21 @@ public class robotTeleOp extends OpMode {
         attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
     }
 
+    @Override
+    public void start() {
+        unwind();
+    }
+
+    public void unwind() {
+        attachment.setServoPosition(0);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        attachment.rotateLiftArm(1, -3100, telemetry);
+    }
+
     public void robotCentricDrive() {
         double lx = gamepad1.left_stick_x * 1.1;
         double ly = gamepad1.left_stick_y;
