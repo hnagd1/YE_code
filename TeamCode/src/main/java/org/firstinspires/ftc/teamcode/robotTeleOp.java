@@ -62,9 +62,8 @@ public class robotTeleOp extends OpMode {
         robotCentricDrive();
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
-        intakeArm();
+        intakeSystem();
         linearSlides();
-        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
     }
 
     @Override
@@ -99,11 +98,13 @@ public class robotTeleOp extends OpMode {
         drive.fieldCentric(lx, ly, rx, gamepad1.right_trigger, IMUReset, telemetry);
     }
 
-    public void intakeArm() {
+    public void intakeSystem() {
         //This gives a value that will be 1 when right, -1 when left, and the middle when both.
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
         //Toggle the lift arm controlled by the input of the triggers
         attachment.toggleLiftArm(liftArmMov, telemetry);
+
+        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
 
         if (!yPress) { //if the automated action bound to Y is active, this doesn't run
 
