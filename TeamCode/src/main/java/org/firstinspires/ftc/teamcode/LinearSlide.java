@@ -12,11 +12,11 @@ public class LinearSlide {
     private DcMotor Motor5;
     private DcMotor Motor6;
 
-    private Servo Servo1;
+    private Servo Servo2;
 
     public void init(HardwareMap hardwareMap) {
         //Apply hardware maps
-        Servo1 = hardwareMap.get(Servo.class, "Servo1");
+        Servo2 = hardwareMap.get(Servo.class, "Servo2");
         Motor5 = hardwareMap.get(DcMotor.class, "Motor5");
         Motor6 = hardwareMap.get(DcMotor.class, "Motor6");
         //This reverses the motors so that Motors 6's encoder values are reversed.
@@ -71,7 +71,7 @@ public class LinearSlide {
     }
 
     public void basketPos(double pos) { //The purpose of this function is so that the main teleop can set the position of the servo
-        Servo1.setPosition(pos);
+        Servo2.setPosition(pos);
     }
 
     public void stop() { //sets the linear slide powers to 0
