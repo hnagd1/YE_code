@@ -141,7 +141,7 @@ public class robotTeleOp extends OpMode {
             aPress = true;
         }
         //we want to give the basket around 0.8 seconds to dump before retracing the slides
-        if ((getRuntime()-aPressTime>0.8)&aPress) {
+        if ((getRuntime()-aPressTime>1)&aPress) {
             aPress = false; //this is so this doesn't run again
             ls.basketPos(1);
             ls.runLinearSlide(-0.7,telemetry);
@@ -157,7 +157,7 @@ public class robotTeleOp extends OpMode {
     }
 
     public void linearSlides() {
-        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry);
+        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry, gamepad2.dpad_left, gamepad2.dpad_right);
     }
 
     public void stop() { //this needs to stop everything
