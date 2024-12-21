@@ -33,6 +33,8 @@ public class LinearSlide {
         Motor6.setTargetPosition(0);
         Motor5.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Motor6.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
     }
 
     public void loop(boolean LB, boolean RB, boolean active, Telemetry telemetry) {
@@ -43,6 +45,7 @@ public class LinearSlide {
         telemetry - this is so we can use telemetry in this function
          */
         telemetry.addData("LS",Motor5.getCurrentPosition());
+        telemetry.addData("SERVO2",Servo2.getPosition());
         if (active) { //Checks if this loop is active
             if (LB) {
                 //Set the linear slide power to 0.7 if LB is pressed to raise
