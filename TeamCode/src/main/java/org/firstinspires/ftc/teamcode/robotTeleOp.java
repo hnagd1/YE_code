@@ -136,14 +136,14 @@ public class robotTeleOp extends OpMode {
 
         //ACTION A
         if (gamepad2.a) { //when a is pressed, we want to dump the basket
-            ls.basketPos(0);
+            ls.basketPos(0.6361);
             aPressTime = getRuntime();
             aPress = true;
         }
         //we want to give the basket around 0.8 seconds to dump before retracing the slides
         if ((getRuntime()-aPressTime>1)&aPress) {
             aPress = false; //this is so this doesn't run again
-            ls.basketPos(1);
+            ls.basketPos(0.8061);
             ls.runLinearSlide(-0.7,telemetry);
             slideContractTime = getRuntime();
             slideContract = true; //make sure the next actions can happen
@@ -152,7 +152,6 @@ public class robotTeleOp extends OpMode {
         if ((getRuntime()-slideContractTime>1.2)&slideContract) {
             ls.runLinearSlide(0.0,telemetry);
             slideContract = false; //this is so this doesn't run again
-            ls.basketPos(0.85); //get the basket into place after dropping
         }
     }
 

@@ -13,6 +13,7 @@ public class LinearSlide {
     private DcMotor Motor6;
 
     Servo Servo2;
+    Servo Servo3;
 
     public void init(HardwareMap hardwareMap) {
         //Apply hardware maps
@@ -44,13 +45,13 @@ public class LinearSlide {
          */
         telemetry.addData("LS",Motor5.getCurrentPosition());
         if (left) {
-            Servo2.setPosition(Servo2.getPosition()-0.0025);
+            Servo3.setPosition(Servo3.getPosition()-0.0025);
         } else if (right) {
-            Servo2.setPosition(Servo2.getPosition()+0.0025);
+            Servo3.setPosition(Servo3.getPosition()+0.0025);
         } else {
-            Servo2.setPosition(Servo2.getPosition());
+            Servo3.setPosition(Servo3.getPosition());
         }
-        telemetry.addData("SERVO2",Servo2.getPosition());
+        telemetry.addData("SERVO2",Servo3.getPosition());
 
         if (active) { //Checks if this loop is active
             if (LB) {
@@ -88,5 +89,3 @@ public class LinearSlide {
         Motor6.setPower(0);
     }
 }
-
-//
