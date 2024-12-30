@@ -18,6 +18,7 @@ public class LinearSlide {
     public void init(HardwareMap hardwareMap) {
         //Apply hardware maps
         Servo2 = hardwareMap.get(Servo.class, "Servo2");
+        Servo3 = hardwareMap.get(Servo.class, "Servo3");
         Motor5 = hardwareMap.get(DcMotor.class, "Motor5");
         Motor6 = hardwareMap.get(DcMotor.class, "Motor6");
         //This reverses the motors so that Motors 6's encoder values are reversed.
@@ -84,8 +85,13 @@ public class LinearSlide {
         Servo2.setPosition(pos);
     }
 
+    public double checkBasketPos() {
+        return Servo2.getPosition();
+    }
+
     public void stop() { //sets the linear slide powers to 0
         Motor5.setPower(0);
         Motor6.setPower(0);
     }
+
 }

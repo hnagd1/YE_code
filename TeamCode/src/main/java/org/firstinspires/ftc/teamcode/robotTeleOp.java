@@ -4,10 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-
-
 
 @TeleOp
 public class robotTeleOp extends OpMode {
@@ -64,6 +60,13 @@ public class robotTeleOp extends OpMode {
         automatedActions(); //Put automated actions before others to prioritize them
         intakeSystem();
         linearSlides();
+
+        // Button functions (for transitions)
+        resetBucket();
+        moveToDumpPos();
+        lockArmPos();
+        buketDump();
+
     }
 
     @Override
@@ -72,13 +75,17 @@ public class robotTeleOp extends OpMode {
     }
 
     public void unwind() {
-        attachment.setServoPosition(0);
+        ls.basketPos(0.87);
+        attachment.setServoPosition(1,1);
+        // TODO: Check to make sure that the position value of this servo is correct
+        attachment.setServoPosition(4, 0);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         attachment.rotateLiftArm(1, -3100, telemetry);
+        attachment.setServoPosition(4, 0.5);
     }
 
     public void robotCentricDrive() {
@@ -100,10 +107,14 @@ public class robotTeleOp extends OpMode {
 
     public void intakeSystem() {
         //This gives a value that will be 1 when right, -1 when left, and the middle when both.
+        double bp = ls.checkBasketPos();
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
-        //Toggle the lift arm controlled by the input of the triggers
-        attachment.toggleLiftArm(liftArmMov, telemetry);
 
+        if (bp < 0.89) {
+            attachment.toggleLiftArm(liftArmMov, telemetry);
+        }
+
+        //Toggle the lift arm controlled by the input of the triggers
         attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
 
         if (!yPress) { //if the automated action bound to Y is active, this doesn't run
@@ -156,7 +167,49 @@ public class robotTeleOp extends OpMode {
     }
 
     public void linearSlides() {
-        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, !slideContract, telemetry, gamepad2.dpad_left, gamepad2.dpad_right);
+        // Changed this function to make it imposible to lift the linar slide without using the button functions, don't know if this is a good idea but it should be easy to re implement if something goes wrong
+        // ls.loop(false, gamepad2.right_bumper, !slideContract, telemetry, gamepad2.dpad_left, gamepad2.dpad_right);
+    }
+
+    // By pressing the Y button the bucket goes to its orginal strating position
+
+    public void resetBucket() {
+        if (gamepad1.y) {
+            ls.basketPos(0.75);
+        }
+    }
+
+    public void moveToDumpPos() {
+        if (gamepad1.b) {
+            ls.basketPos(0.95);
+            attachment.rotateLiftArm(1, -4300, telemetry);
+            attachment.setServoPosition(1,0.375);
+        }
+    }
+
+    public void lockArmPos() {
+        if (gamepad1.x) {
+            attachment.setServoPosition(1,1);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            attachment.rotateLiftArm(1, -3100, telemetry);
+            ls.runLinearSlide(0.7, telemetry);
+        }
+    }
+
+    public void buketDump() {
+        if (gamepad1.a) {
+            ls.basketPos(0.95);
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            ls.runLinearSlide(-0.7, telemetry);
+        }
     }
 
     public void stop() { //this needs to stop everything
@@ -167,4 +220,4 @@ public class robotTeleOp extends OpMode {
     }
 }
 
-
+//jack is dumb fr fr nc bbs

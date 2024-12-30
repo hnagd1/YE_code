@@ -14,6 +14,9 @@ public class attachmentMethods {
     DcMotor Motor4;
     CRServo Servo0;
     Servo Servo1;
+    // Servo2 can be found in linear slide code
+    Servo Servo3;
+    Servo Servo4;
 
     // TODO: test the setPower extention code
     public void init(HardwareMap hardwareMap) {
@@ -22,6 +25,8 @@ public class attachmentMethods {
         Motor4 = hardwareMap.get(DcMotor.class, "Motor4");
         Servo0 = hardwareMap.get(CRServo.class, "Servo0");
         Servo1 = hardwareMap.get(Servo.class, "Servo1");
+        Servo3 = hardwareMap.get(Servo.class, "Servo3");
+        Servo4 = hardwareMap.get(Servo.class, "Servo4");
 
         // Sets the starting diriction of the arm motor and intake servo, this will change as the drivers control the robot
         Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -128,10 +133,22 @@ public class attachmentMethods {
         } else {
             Servo1.setPosition(Servo1.getPosition());
         }
-        telemetry.addData("Servo", Servo1.getPosition());
+        telemetry.addData("Servo", Servo4.getPosition());
     }
 
-    public void setServoPosition(double position) {Servo1.setPosition(position);}
+    public void setServoPosition(int servoNum, double position) {
+        if (servoNum == 1) {
+            Servo1.setPosition(position);
+        } else if (servoNum == 3) {
+            Servo3.setPosition(position);
+        } else if (servoNum == 4) {
+            Servo4.setPosition(position);
+        }
+    }
+
+    public void teleLoop(Telemetry telemetry) {
+        telemetry.addData("Servo1", Servo1.getPosition());
+    }
 
     // Used for servo1 init stuff
     // TODO: confirm where this is still being used
