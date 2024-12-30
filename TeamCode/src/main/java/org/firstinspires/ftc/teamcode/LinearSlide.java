@@ -42,17 +42,9 @@ public class LinearSlide {
         bool LB - Left bumper on gamepad 2. Raises the linear slides
         bool RB - Right bumper on gamepad 2 Lowers the linear slides
         bool active - used to disable the linear slides when they are automatically being lowered
-        telemetry - this is so we can use telemetry in this function
-         */
+        telemetry - this is so we can use telemetry in this function */
+
         telemetry.addData("LS",Motor5.getCurrentPosition());
-        if (left) {
-            Servo3.setPosition(Servo3.getPosition()-0.0025);
-        } else if (right) {
-            Servo3.setPosition(Servo3.getPosition()+0.0025);
-        } else {
-            Servo3.setPosition(Servo3.getPosition());
-        }
-        telemetry.addData("SERVO2",Servo3.getPosition());
 
         if (active) { //Checks if this loop is active
             if (LB) {
@@ -83,10 +75,6 @@ public class LinearSlide {
 
     public void basketPos(double pos) { //The purpose of this function is so that the main teleop can set the position of the servo
         Servo2.setPosition(pos);
-    }
-
-    public double checkBasketPos() {
-        return Servo2.getPosition();
     }
 
     public void stop() { //sets the linear slide powers to 0
