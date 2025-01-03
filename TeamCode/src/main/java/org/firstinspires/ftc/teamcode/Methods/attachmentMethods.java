@@ -14,7 +14,7 @@ public class attachmentMethods {
     DcMotor Motor4;
     CRServo Servo0;
     Servo Servo1;
-    Servo Servo2;
+    // Servo2 can be found in linear slide code
     Servo Servo3;
     Servo Servo4;
 
@@ -40,52 +40,41 @@ public class attachmentMethods {
         Motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
-
-    // Function is used for driver controlled arm movements
+    // Function is used for driver controled arm movments
     public void toggleLiftArm(double triggers, Telemetry telemetry) {
+        telemetry.addData("Pos:", Motor4.getCurrentPosition());
         /* This function takes the parameters:
                 1. Triggers, the value of gamepad 2 left trigger - gamepad 2 right trigger
                 2. Telemetry, a class used to write to the console. Required to be passed in as this function isn't part of a OpMode
          */
-
-
-        if (Servo2.getPosition() >= 0.89) { //This is to ensure it doesn't run this if servo2 >= 0.89
-            return;
-        }
-
-
-        telemetry.addData("Position", Motor4.getCurrentPosition());
-        telemetry.addData("Pos:", Motor4.getCurrentPosition());
-
 
         // Checks if the triggers value is more than 0 (left trigger is being pressed down more than right trigger)
         if (triggers > 0) {
             // Sets the direction of the motor to forward, or moving away from the robot
             Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
             Motor4.setPower(Math.abs(triggers));
-            return; //stops the other conditions from running unnecessarily
-        }
-
-
-        if (triggers < 0) {
+            telemetry.addData("Movement","up");
+        // Checks if the triggers value is less than 0 (right trigger is being pressed down more than left trigger)
+        } else if (triggers < 0) {
             // Sets the direction of the motor to REVERSE, or moving to the robot
             Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
             // Checks if the encoder value is less than -1376
-            if (Motor4.getCurrentPosition() < -3100) {
+            if (Motor4.getCurrentPosition()<-3100) {
                 // If the above requirements are meet than the motors will move in the absolute value of the triggers value (negative Motor powers isn't possible, this is why we switch directions)
                 Motor4.setPower(Math.abs(triggers));
             } else {
                 // You have gone beyond the range of motion and may not move anymore in this direction, aka setting power to 0 before it can move
                 Motor4.setPower(0);
             }
+            telemetry.addData("Movement","down");
+        // Checks if triggers are not pressed down or pressed down very little
+        } else if (triggers < 0.1 && triggers > -0.1) {
+            // Sets power to 0 because no buttons are being pressed and the motor should thus not be moving
+            Motor4.setPower(0);
+            telemetry.addData("Movement","none");
 
-            return; //stops the other conditions from running unnecessarily
         }
-
-
-        Motor4.setPower(0);
-        // Sets power to 0 because no buttons are being pressed and the motor should not be moving
+        telemetry.addData("Position", Motor4.getCurrentPosition());
     }
 
     // Function is used for automatic arm movement without any driver interaction

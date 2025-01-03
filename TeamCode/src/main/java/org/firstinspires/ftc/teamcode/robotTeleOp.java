@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
+
 @TeleOp
 public class robotTeleOp extends OpMode {
 
@@ -33,15 +34,30 @@ public class robotTeleOp extends OpMode {
         auto.init(hardwareMap);
         attachment.init(hardwareMap);
         ls.init(hardwareMap);
+
+        // TODO: Port this over to auto
+        /*auto.setDriveAngle(0, 0.4); //TODO: make this strafe the correct direction
+        try { //wait 650 millis
+            Thread.sleep(650);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        auto.stopMotors(); //stops the movement
+        ls.runLinearSlide(0.7,telemetry); //extend the slides
+        try { //sleep
+            Thread.sleep(1200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.*/
     }
 
     @Override
     public void loop() {
+        //for test:
+        robotCentricDrive();
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
-
-        robotCentricDrive();
-
         intakeSystem();
         linearSlides();
 
@@ -49,7 +65,7 @@ public class robotTeleOp extends OpMode {
         resetBucket();
         moveToDumpPos();
         lockArmPos();
-        bucketDump();
+        buketDump();
 
     }
 
@@ -91,10 +107,15 @@ public class robotTeleOp extends OpMode {
 
     public void intakeSystem() {
         //This gives a value that will be 1 when right, -1 when left, and the middle when both.
+        double bp = ls.checkBasketPos();
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
 
-        attachment.toggleLiftArm(liftArmMov, telemetry); //Lift arm code
-        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry); //Joint movement code
+        if (bp < 0.89) {
+            attachment.toggleLiftArm(liftArmMov, telemetry);
+        }
+
+        //Toggle the lift arm controlled by the input of the triggers
+        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
 
         if (!yPress) { //if the automated action bound to Y is active, this doesn't run
 
@@ -111,20 +132,20 @@ public class robotTeleOp extends OpMode {
     }
 
     public void automatedActions() {
-        /*Gamepad2 Y: Dump intake*/ //TODO: Fix?? We don't use this system anymore
+        //ACTION Y
         if (gamepad2.y) { //When Y is pressed, we want it to go to the correct position, and dump the contents
             attachment.rotateLiftArm(1,1276,telemetry); //this takes it to the correct position (calibrated with init pos)
             attachment.toggleIntake(-0.2); //dumps
             yPressTime = getRuntime(); //saves the runtime at the time of press
             yPress = true;
         }
-        //we need to give the arm one second to go into place before dumping
+        //we need to give the arm a second to go into place before dumping
         if ((getRuntime()-yPressTime>1)&yPress) { //this checks if its been more than 1 second since y has been pressed
             attachment.toggleIntake(0); //stop intake
             yPress = false; //this is so this doesn't run again
         }
 
-        /*Gamepad2 A: Dump Basket*/
+        //ACTION A
         if (gamepad2.a) { //when a is pressed, we want to dump the basket
             ls.basketPos(0.6361);
             aPressTime = getRuntime();
@@ -146,11 +167,11 @@ public class robotTeleOp extends OpMode {
     }
 
     public void linearSlides() {
-        // Changed this function to make it impossible to lift the linear slide without using the button functions, don't know if this is a good idea but it should be easy to re implement if something goes wrong
+        // Changed this function to make it imposible to lift the linar slide without using the button functions, don't know if this is a good idea but it should be easy to re implement if something goes wrong
         // ls.loop(false, gamepad2.right_bumper, !slideContract, telemetry, gamepad2.dpad_left, gamepad2.dpad_right);
     }
 
-    // By pressing the Y button the bucket goes to its original starting position
+    // By pressing the Y button the bucket goes to its orginal strating position
 
     public void resetBucket() {
         if (gamepad1.y) {
@@ -179,7 +200,7 @@ public class robotTeleOp extends OpMode {
         }
     }
 
-    public void bucketDump() {
+    public void buketDump() {
         if (gamepad1.a) {
             ls.basketPos(0.95);
             try {
