@@ -85,7 +85,7 @@ public class robotTeleOp extends OpMode {
             throw new RuntimeException(e);
         }
         attachment.rotateLiftArm(1, -3100, telemetry);
-        attachment.setServoPosition(4, 0.5);
+        attachment.setServoPosition(4, 0.8);
     }
 
     public void robotCentricDrive() {
@@ -110,7 +110,7 @@ public class robotTeleOp extends OpMode {
         double bp = ls.checkBasketPos();
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
 
-        if (bp < 0.89) {
+        if (bp > 0.89) {
             attachment.toggleLiftArm(liftArmMov, telemetry);
         }
 
