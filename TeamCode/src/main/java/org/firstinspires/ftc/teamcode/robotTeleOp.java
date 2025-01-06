@@ -10,12 +10,13 @@ public class robotTeleOp extends OpMode {
 
     double yPressTime;
     boolean yPress;
-    double aPressTime;
-    boolean aPress;
-    double slideContractTime;
-    boolean slideContract;
-    boolean brakeButton = false;
-    boolean rSB = false;
+
+    double lockArmTime;
+    boolean lockArm;
+    double bucketDumpTime;
+    boolean bucketDump;
+    boolean bucketRetract;
+
 
     boolean IMUReset;
 
@@ -59,19 +60,12 @@ public class robotTeleOp extends OpMode {
         //call the functions that control the different functions of the robot
         automatedActions(); //Put automated actions before others to prioritize them
         intakeSystem();
-        linearSlides();
-
-        // Button functions (for transitions)
-        resetBucket();
-        moveToDumpPos();
-        lockArmPos();
-        buketDump();
-
+        //linearSlides();
     }
 
     @Override
     public void start() {
-        unwind();
+        //unwind();
     }
 
     public void unwind() {
@@ -117,99 +111,55 @@ public class robotTeleOp extends OpMode {
         //Toggle the lift arm controlled by the input of the triggers
         attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
 
-        if (!yPress) { //if the automated action bound to Y is active, this doesn't run
-
-            //set intake power to 1 if b is pressed, -1 if x is pressed, and 0 if nothing is pressed.
-            if (gamepad2.b) {
-                attachment.toggleIntake(1);
-            } else if (gamepad2.x) {
-                attachment.toggleIntake(-1);
-            } else {
-                attachment.toggleIntake(0);
-            }
-
+        //set intake power to 1 if b is pressed, -1 if x is pressed, and 0 if nothing is pressed.
+        if (gamepad2.b) {
+            attachment.toggleIntake(1);
+        } else if (gamepad2.x) {
+            attachment.toggleIntake(-1);
+        } else {
+            attachment.toggleIntake(0);
         }
+
     }
 
     public void automatedActions() {
-        //ACTION Y
-        if (gamepad2.y) { //When Y is pressed, we want it to go to the correct position, and dump the contents
-            attachment.rotateLiftArm(1,1276,telemetry); //this takes it to the correct position (calibrated with init pos)
-            attachment.toggleIntake(-0.2); //dumps
-            yPressTime = getRuntime(); //saves the runtime at the time of press
-            yPress = true;
-        }
-        //we need to give the arm a second to go into place before dumping
-        if ((getRuntime()-yPressTime>1)&yPress) { //this checks if its been more than 1 second since y has been pressed
-            attachment.toggleIntake(0); //stop intake
-            yPress = false; //this is so this doesn't run again
-        }
-
-        //ACTION A
-        if (gamepad2.a) { //when a is pressed, we want to dump the basket
-            ls.basketPos(0.6361);
-            aPressTime = getRuntime();
-            aPress = true;
-        }
-        //we want to give the basket around 0.8 seconds to dump before retracing the slides
-        if ((getRuntime()-aPressTime>1)&aPress) {
-            aPress = false; //this is so this doesn't run again
-            ls.basketPos(0.8061);
-            ls.runLinearSlide(-0.7,telemetry);
-            slideContractTime = getRuntime();
-            slideContract = true; //make sure the next actions can happen
-        }
-
-        if ((getRuntime()-slideContractTime>1.2)&slideContract) {
-            ls.runLinearSlide(0.0,telemetry);
-            slideContract = false; //this is so this doesn't run again
-        }
-    }
-
-    public void linearSlides() {
-        // Changed this function to make it imposible to lift the linar slide without using the button functions, don't know if this is a good idea but it should be easy to re implement if something goes wrong
-        // ls.loop(false, gamepad2.right_bumper, !slideContract, telemetry, gamepad2.dpad_left, gamepad2.dpad_right);
-    }
-
-    // By pressing the Y button the bucket goes to its orginal strating position
-
-    public void resetBucket() {
-        if (gamepad1.y) {
-            ls.basketPos(0.75);
-        }
-    }
-
-    public void moveToDumpPos() {
-        if (gamepad1.b) {
+        /*Move To Intake Dump Position*/
+        if (gamepad2.a) {
             ls.basketPos(0.95);
             attachment.rotateLiftArm(1, -4300, telemetry);
             attachment.setServoPosition(1,0.375);
         }
-    }
-
-    public void lockArmPos() {
-        if (gamepad1.x) {
+        /*Move to high Basket Pos*/
+        if (gamepad1.a) {
             attachment.setServoPosition(1,1);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            lockArmTime = getRuntime();
+            lockArm = true;
+        }
+        if ((getRuntime()-lockArmTime > 1.0)&lockArm) {
             attachment.rotateLiftArm(1, -3100, telemetry);
             ls.runLinearSlide(0.7, telemetry);
+            lockArm = false;
+        }
+        /*Dump Sample and Retract slides*/
+        if (gamepad1.b) {
+            ls.basketPos(0.75);
+            bucketDumpTime = getRuntime();
+            bucketDump = true;
+        }
+        if ((getRuntime()- bucketDumpTime > 0.5) & bucketDump) {
+            ls.basketPos(0.95);
+            bucketDumpTime = getRuntime();
+            bucketRetract = true;
+            bucketDump = false;
+        }
+        if ((getRuntime()- bucketDumpTime > 0.5) & bucketRetract) {
+            ls.runLinearSlide(-0.7, telemetry);
+            bucketRetract = false;
         }
     }
 
-    public void buketDump() {
-        if (gamepad1.a) {
-            ls.basketPos(0.95);
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            ls.runLinearSlide(-0.7, telemetry);
-        }
+    public void linearSlides() {
+        ls.loop(gamepad2.left_bumper, gamepad2.right_bumper, telemetry);
     }
 
     public void stop() { //this needs to stop everything

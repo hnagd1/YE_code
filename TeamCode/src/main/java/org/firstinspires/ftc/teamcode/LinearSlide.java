@@ -37,35 +37,24 @@ public class LinearSlide {
         Motor6.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void loop(boolean LB, boolean RB, boolean active, Telemetry telemetry, boolean left, boolean right) {
+    public void loop(boolean LB, boolean RB, Telemetry telemetry) {
         /* This is the main loop for linear slides. This loop contains 4 operands:
         bool LB - Left bumper on gamepad 2. Raises the linear slides
         bool RB - Right bumper on gamepad 2 Lowers the linear slides
-        bool active - used to disable the linear slides when they are automatically being lowered
         telemetry - this is so we can use telemetry in this function
          */
-        telemetry.addData("LS",Motor5.getCurrentPosition());
-        if (left) {
-            Servo3.setPosition(Servo3.getPosition()-0.0025);
-        } else if (right) {
-            Servo3.setPosition(Servo3.getPosition()+0.0025);
-        } else {
-            Servo3.setPosition(Servo3.getPosition());
-        }
-        telemetry.addData("SERVO2",Servo3.getPosition());
 
-        if (active) { //Checks if this loop is active
-            if (LB) {
-                //Set the linear slide power to 0.7 if LB is pressed to raise
-                runLinearSlide(0.7,telemetry);
-            } else if (RB) {
-                //Set the linear slide power to -0.7 if RB is pressed to lower
-                runLinearSlide(-0.7,telemetry);
-            } else {
-                //stop the linear slides if nothing is being pressed
-                runLinearSlide(0.0,telemetry);
-            }
+        if (LB) {
+            //Set the linear slide power to 0.7 if LB is pressed to raise
+            runLinearSlide(0.7,telemetry);
+        } else if (RB) {
+            //Set the linear slide power to -0.7 if RB is pressed to lower
+            runLinearSlide(-0.7,telemetry);
+        } else {
+            //stop the linear slides if nothing is being pressed
+            runLinearSlide(0.0,telemetry);
         }
+
     }
 
     public void runLinearSlide(Double power, Telemetry telemetry) {
