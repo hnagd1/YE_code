@@ -47,34 +47,24 @@ public class attachmentMethods {
                 1. Triggers, the value of gamepad 2 left trigger - gamepad 2 right trigger
                 2. Telemetry, a class used to write to the console. Required to be passed in as this function isn't part of a OpMode
          */
-
+        telemetry.addData("INTAKE MOTOR",Motor4.getCurrentPosition());
+        telemetry.addData("INTAKE SERVO",Servo1.getPosition());
         // Checks if the triggers value is more than 0 (left trigger is being pressed down more than right trigger)
         if (triggers > 0) {
             // Sets the direction of the motor to forward, or moving away from the robot
             Motor4.setDirection(DcMotorSimple.Direction.REVERSE);
             Motor4.setPower(Math.abs(triggers));
-            telemetry.addData("Movement","up");
         // Checks if the triggers value is less than 0 (right trigger is being pressed down more than left trigger)
         } else if (triggers < 0) {
             // Sets the direction of the motor to REVERSE, or moving to the robot
             Motor4.setDirection(DcMotorSimple.Direction.FORWARD);
-            // Checks if the encoder value is less than -1376
-            if (Motor4.getCurrentPosition()<-3100) {
-                // If the above requirements are meet than the motors will move in the absolute value of the triggers value (negative Motor powers isn't possible, this is why we switch directions)
-                Motor4.setPower(Math.abs(triggers));
-            } else {
-                // You have gone beyond the range of motion and may not move anymore in this direction, aka setting power to 0 before it can move
-                Motor4.setPower(0);
-            }
-            telemetry.addData("Movement","down");
+            Motor4.setPower(Math.abs(triggers));
         // Checks if triggers are not pressed down or pressed down very little
         } else if (triggers < 0.1 && triggers > -0.1) {
             // Sets power to 0 because no buttons are being pressed and the motor should thus not be moving
             Motor4.setPower(0);
-            telemetry.addData("Movement","none");
 
         }
-        telemetry.addData("Position", Motor4.getCurrentPosition());
     }
 
     // Function is used for automatic arm movement without any driver interaction

@@ -119,7 +119,6 @@ public class robotTeleOp extends OpMode {
         } else {
             attachment.toggleIntake(0);
         }
-
     }
 
     public void automatedActions() {
