@@ -28,10 +28,15 @@ public class RoadRunnerTest extends LinearOpMode {
         }
 
         public class retract implements Action{
+            @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 ls0.setTargetPosition(0);
                 ls1.setTargetPosition(0);
+                ls0.setPower(0.7);
+                ls1.setPower(0.7);
                 if (ls0.getCurrentPosition() < 10) {
+                    ls0.setPower(0);
+                    ls1.setPower(0);
                     return false;
                 } else {
                     return true;
@@ -44,10 +49,15 @@ public class RoadRunnerTest extends LinearOpMode {
         }
 
         public class extend implements Action{
+            @Override
             public boolean run(@NonNull TelemetryPacket packet) {
                 ls0.setTargetPosition(3100);
                 ls1.setTargetPosition(3100);
+                ls0.setPower(0.7);
+                ls1.setPower(0.7);
                 if (ls0.getCurrentPosition() > 3050) {
+                    ls0.setPower(0);
+                    ls1.setPower(0);
                     return false;
                 } else {
                     return true;
@@ -68,16 +78,8 @@ public class RoadRunnerTest extends LinearOpMode {
 
         //TODO: Figure out stop code here
 
-        Actions.runBlocking(
-                new SequentialAction(
-                        ls.retract(),
-                        ls.extend(),
-                        ls.retract(),
-                        ls.extend(),
-                        ls.retract(),
-                        ls.extend(),
-                        ls.retract(),
-                        ls.extend()
-        ));
+        waitForStart();
+
+        Actions.runBlocking(ls.extend());
     }
 }

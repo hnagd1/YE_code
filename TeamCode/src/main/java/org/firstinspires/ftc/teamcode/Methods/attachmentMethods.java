@@ -47,8 +47,7 @@ public class attachmentMethods {
                 1. Triggers, the value of gamepad 2 left trigger - gamepad 2 right trigger
                 2. Telemetry, a class used to write to the console. Required to be passed in as this function isn't part of a OpMode
          */
-        telemetry.addData("INTAKE MOTOR",Motor4.getCurrentPosition());
-        telemetry.addData("INTAKE SERVO",Servo1.getPosition());
+
         // Checks if the triggers value is more than 0 (left trigger is being pressed down more than right trigger)
         if (triggers > 0) {
             // Sets the direction of the motor to forward, or moving away from the robot
@@ -115,6 +114,8 @@ public class attachmentMethods {
     }
 
     public void jointMovement(boolean dpd, boolean dpu, Telemetry telemetry) {
+        telemetry.addData("INTAKE MOTOR",Motor4.getCurrentPosition());
+        telemetry.addData("INTAKE SERVO",Servo1.getPosition());
         // Function passes in dpd (boolean of if d-pad down is preased) and dpu (boolean of if d-pad up is preased) and the telemetry class
         if (dpd) {
             Servo1.setPosition(Servo1.getPosition()-0.0025);

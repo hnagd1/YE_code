@@ -21,7 +21,6 @@ public class robotTeleOp extends OpMode {
     boolean IMUReset;
 
 
-    //TODO: add comments on this
     drivingMethods drive = new drivingMethods();
     autonomousMethods auto = new autonomousMethods();
     attachmentMethods attachment = new attachmentMethods();
@@ -36,21 +35,6 @@ public class robotTeleOp extends OpMode {
         attachment.init(hardwareMap);
         ls.init(hardwareMap);
 
-        // TODO: Port this over to auto
-        /*auto.setDriveAngle(0, 0.4); //TODO: make this strafe the correct direction
-        try { //wait 650 millis
-            Thread.sleep(650);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        auto.stopMotors(); //stops the movement
-        ls.runLinearSlide(0.7,telemetry); //extend the slides
-        try { //sleep
-            Thread.sleep(1200);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        attachment.rotateLiftArm(1,2000,telemetry); // rotate lift arm into position.*/
     }
 
     @Override
@@ -64,9 +48,7 @@ public class robotTeleOp extends OpMode {
     }
 
     @Override
-    public void start() {
-        //unwind();
-    }
+    public void start() {attachment.setServoPosition(1,1);}
 
     public void unwind() {
         ls.basketPos(0.87);
@@ -91,7 +73,6 @@ public class robotTeleOp extends OpMode {
     }
 
     public void fieldCentricDrive() {
-        //TODO: insert field centric code into here
         IMUReset = gamepad1.options;
         double lx = gamepad1.left_stick_x * 1.1;
         double ly = gamepad1.left_stick_y;
@@ -126,16 +107,16 @@ public class robotTeleOp extends OpMode {
         if (gamepad2.a) {
             ls.basketPos(0.95);
             attachment.rotateLiftArm(1, -4300, telemetry);
-            attachment.setServoPosition(1,0.375);
+            attachment.setServoPosition(1,0.6);
         }
         /*Move to high Basket Pos*/
         if (gamepad1.a) {
-            attachment.setServoPosition(1,1);
+            attachment.setServoPosition(1,0.66);
             lockArmTime = getRuntime();
             lockArm = true;
         }
         if ((getRuntime()-lockArmTime > 1.0)&lockArm) {
-            attachment.rotateLiftArm(1, -3100, telemetry);
+            attachment.rotateLiftArm(1, -5600, telemetry);
             ls.runLinearSlide(0.7, telemetry);
             lockArm = false;
         }
@@ -145,7 +126,7 @@ public class robotTeleOp extends OpMode {
             bucketDumpTime = getRuntime();
             bucketDump = true;
         }
-        if ((getRuntime()- bucketDumpTime > 0.5) & bucketDump) {
+        if ((getRuntime()- bucketDumpTime > 0.75) & bucketDump) {
             ls.basketPos(0.95);
             bucketDumpTime = getRuntime();
             bucketRetract = true;
@@ -163,7 +144,6 @@ public class robotTeleOp extends OpMode {
 
     public void stop() { //this needs to stop everything
         drive.setMode(true); //this sets the motors to brake
-        attachment.resetServo(); //reset the servos
         drive.setPower(0,0,0,0); //Set motor powers to 0
         ls.stop(); //stops the linear slides
     }
