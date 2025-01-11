@@ -48,7 +48,7 @@ public class robotTeleOp extends OpMode {
     }
 
     @Override
-    public void start() {attachment.setServoPosition(1,1);}
+    public void start() {}
 
     public void unwind() {
         ls.basketPos(0.87);
@@ -105,7 +105,7 @@ public class robotTeleOp extends OpMode {
     public void automatedActions() {
         /*Move To Intake Dump Position*/
         if (gamepad2.a) {
-            ls.basketPos(0.95);
+            ls.basketPos(0.935);
             attachment.rotateLiftArm(1, -4300, telemetry);
             attachment.setServoPosition(1,0.6);
         }
@@ -127,7 +127,7 @@ public class robotTeleOp extends OpMode {
             bucketDump = true;
         }
         if ((getRuntime()- bucketDumpTime > 0.75) & bucketDump) {
-            ls.basketPos(0.95);
+            ls.basketPos(0.935);
             bucketDumpTime = getRuntime();
             bucketRetract = true;
             bucketDump = false;
