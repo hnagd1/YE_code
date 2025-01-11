@@ -82,10 +82,10 @@ public class robotTeleOp extends OpMode {
 
     public void intakeSystem() {
         //This gives a value that will be 1 when right, -1 when left, and the middle when both.
-        double bp = ls.checkBasketPos();
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
 
-        if (bp > 0.89) {
+        //Checks if the linear slide is raised to prevent the robot from becoming too large
+        if (ls.pos() > 2000) {
             attachment.toggleLiftArm(liftArmMov, telemetry);
         }
 
@@ -103,13 +103,27 @@ public class robotTeleOp extends OpMode {
     }
 
     public void automatedActions() {
-        /*Move To Intake Dump Position*/
+        /**
+         * Automated actions are combinations of actions the robot can perform on a simple button press.
+         * Some may include multiple parts. This is so they are able to perform timed actions.
+         * These timed actions require a variable to be set to the runtime, and a activator variable to be set.
+         * The next segment will then look for when the correct amount of time has passed and the action is active.
+         */
+
+        /**
+         * Intake Dump:
+         * This action ensures the basket is in position and moves the intake arm into position.
+         */
         if (gamepad2.a) {
             ls.basketPos(0.935);
             attachment.rotateLiftArm(1, -4300, telemetry);
             attachment.setServoPosition(1,0.6);
         }
-        /*Move to high Basket Pos*/
+        /**
+         * Move to high basket position:
+         * This action sets the sets the intake servo to the arm lock position.
+         * After it has given the servo 1 second to move into place, it then moves the intake arm into place and lifts the slides.
+         */
         if (gamepad1.a) {
             attachment.setServoPosition(1,0.66);
             lockArmTime = getRuntime();

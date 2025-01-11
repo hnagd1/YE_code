@@ -74,8 +74,8 @@ public class LinearSlide {
         Servo2.setPosition(pos);
     }
 
-    public double checkBasketPos() {
-        return Servo2.getPosition();
+    public int pos() {
+        return Motor5.getCurrentPosition();
     }
 
     public void stop() { //sets the linear slide powers to 0
