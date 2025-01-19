@@ -8,9 +8,6 @@ import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
 @TeleOp
 public class robotTeleOp extends OpMode {
 
-    double yPressTime;
-    boolean yPress;
-
     double lockArmTime;
     boolean lockArm;
     double bucketDumpTime;
@@ -39,16 +36,17 @@ public class robotTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        //for test:
         robotCentricDrive();
-        //call the functions that control the different functions of the robot
+
         automatedActions(); //Put automated actions before others to prioritize them
         intakeSystem();
         //linearSlides();
     }
 
     @Override
-    public void start() {}
+    public void start() {
+        //unused
+    }
 
     public void unwind() {
         ls.basketPos(0.87);
@@ -85,12 +83,13 @@ public class robotTeleOp extends OpMode {
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
 
         //Checks if the linear slide is raised to prevent the robot from becoming too large
-        if (ls.pos() > 2000) {
+        if (ls.pos() < 2000) {
             attachment.toggleLiftArm(liftArmMov, telemetry);
+            attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
         }
 
         //Toggle the lift arm controlled by the input of the triggers
-        attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
+
 
         //set intake power to 1 if b is pressed, -1 if x is pressed, and 0 if nothing is pressed.
         if (gamepad2.b) {

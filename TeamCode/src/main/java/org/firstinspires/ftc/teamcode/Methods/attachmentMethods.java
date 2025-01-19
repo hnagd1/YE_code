@@ -36,7 +36,7 @@ public class attachmentMethods {
         Motor4.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         // Resets the encoder to position 0 and sets the mode so that the encoder isn't interfering with Motor inputs
-        Motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        // Motor4.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         Motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
