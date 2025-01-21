@@ -1,10 +1,14 @@
 package org.firstinspires.ftc.teamcode;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
 
+@Config
 @TeleOp
 public class robotTeleOp extends OpMode {
 
@@ -23,9 +27,19 @@ public class robotTeleOp extends OpMode {
     attachmentMethods attachment = new attachmentMethods();
     LinearSlide ls = new LinearSlide();
 
+    // Auto action adjustment varibles, these are used to adjust pos in real time
+
+    public static double BUCKET_INTAKE_POS = 0.9;
+    public static int ARM_INTAKE_POS = -2300;
+    public static int ARM_HIGH_BASKET_POS = -3800;
+    public static double BUCKET_DUMP_POS = 0.25;
+    public static double BUCKET_RETRACT_POS = 0.9;
 
     @Override
     public void init() {
+        // Allows the telemetry varibel to send data to both DS and FTC dashboard
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+
         //initialize functions with the hardware map
         drive.init(hardwareMap);
         auto.init(hardwareMap);
@@ -41,6 +55,8 @@ public class robotTeleOp extends OpMode {
         automatedActions(); //Put automated actions before others to prioritize them
         intakeSystem();
         //linearSlides();
+
+        ls.pos(telemetry);
     }
 
     @Override
@@ -83,7 +99,7 @@ public class robotTeleOp extends OpMode {
         double liftArmMov = gamepad2.right_trigger - gamepad2.left_trigger;
 
         //Checks if the linear slide is raised to prevent the robot from becoming too large
-        if (ls.pos() < 2000) {
+        if (ls.pos(telemetry) < 2000) {
             attachment.toggleLiftArm(liftArmMov, telemetry);
             attachment.jointMovement(gamepad2.dpad_down, gamepad2.dpad_up, telemetry);
         }
@@ -114,9 +130,9 @@ public class robotTeleOp extends OpMode {
          * This action ensures the basket is in position and moves the intake arm into position.
          */
         if (gamepad2.a) {
-            ls.basketPos(0.935);
-            attachment.rotateLiftArm(1, -4300, telemetry);
-            attachment.setServoPosition(1,0.6);
+            ls.basketPos(BUCKET_INTAKE_POS); // TODO: Adjust this
+            attachment.rotateLiftArm(1, ARM_INTAKE_POS, telemetry); // TODO: Adjust this
+            attachment.setServoPosition(1,0.63);
         }
         /**
          * Move to high basket position:
@@ -125,22 +141,23 @@ public class robotTeleOp extends OpMode {
          */
         if (gamepad1.a) {
             attachment.setServoPosition(1,0.66);
+            attachment.rotateLiftArm(1, ARM_HIGH_BASKET_POS, telemetry);
             lockArmTime = getRuntime();
             lockArm = true;
         }
-        if ((getRuntime()-lockArmTime > 1.0)&lockArm) {
-            attachment.rotateLiftArm(1, -5600, telemetry);
+        if ((getRuntime()-lockArmTime > 0.25)&lockArm) {
+             // TODO: Adjust this
             ls.runLinearSlide(0.7, telemetry);
             lockArm = false;
         }
         /*Dump Sample and Retract slides*/
         if (gamepad1.b) {
-            ls.basketPos(0.75);
+            ls.basketPos(BUCKET_DUMP_POS); // TODO: Adjust this
             bucketDumpTime = getRuntime();
             bucketDump = true;
         }
-        if ((getRuntime()- bucketDumpTime > 0.75) & bucketDump) {
-            ls.basketPos(0.935);
+        if ((getRuntime()- bucketDumpTime > 0.5) & bucketDump) {
+            ls.basketPos(BUCKET_RETRACT_POS); // TODO: Adjust this
             bucketDumpTime = getRuntime();
             bucketRetract = true;
             bucketDump = false;

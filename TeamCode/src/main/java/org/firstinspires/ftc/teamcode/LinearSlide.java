@@ -74,7 +74,8 @@ public class LinearSlide {
         Servo2.setPosition(pos);
     }
 
-    public int pos() {
+    public int pos(Telemetry telemetry) {
+        telemetry.addData("LSServo", Servo2.getPosition());
         return Motor5.getCurrentPosition();
     }
 
