@@ -89,7 +89,7 @@ public class attachmentMethods {
         // After motor reaches destination it sets the power to 0 and comes to a stop
         Motor4.setPower(0);
         // Resets the encoder value to 0
-        Motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // Motor4.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     // Used to control the direction of the intake motor
@@ -118,11 +118,12 @@ public class attachmentMethods {
         telemetry.addData("INTAKE SERVO",Servo1.getPosition());
         // Function passes in dpd (boolean of if d-pad down is preased) and dpu (boolean of if d-pad up is preased) and the telemetry class
         if (dpd) {
-            Servo1.setPosition(Servo1.getPosition()-0.0025);
-        } else if (dpu) {
             Servo1.setPosition(Servo1.getPosition()+0.0025);
+        } else if (dpu) {
+            Servo1.setPosition(Servo1.getPosition()-0.0025);
         } else {
             Servo1.setPosition(Servo1.getPosition());
+
         }
         telemetry.addData("Servo", Servo4.getPosition());
     }

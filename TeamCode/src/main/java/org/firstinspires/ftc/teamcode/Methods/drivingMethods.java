@@ -102,7 +102,7 @@ public class drivingMethods {
         setPower(powerFL, powerFR, powerBR, powerBL);
     }
 
-    public void fieldCentric(double lx, double ly, double rx, double speed, boolean IMUReset, Telemetry telemetry) {
+    public void fieldCentric(double lx, double ly, double rx, double speed, boolean IMUReset, Telemetry telemetry, double runTime) {
         // Function will pass in lx (left_stick_x), ly (left_stick_y), rx (right_stick_x), and IMUReset (options button)
 
         //TODO:Motor Speed implemented soon
@@ -111,10 +111,13 @@ public class drivingMethods {
         // If the option button (IMUReset) is pressed, this will reset the IMU yaw angle
         if (IMUReset) {
             imu.resetYaw();
+            telemetry.addLine("Imu reset at" + runTime);
         }
 
         // Sets the botHeading to the IMU yaw angle in radians
         double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+
+        telemetry.addLine(String.valueOf(botHeading));
 
         // TODO: explain this math
         double rotX = lx * Math.cos(botHeading) - ly * Math.sin(botHeading);
@@ -127,7 +130,7 @@ public class drivingMethods {
 
 
 
-        // Dominator is basically making sure the Motor values are all moving proportionally and not exceeding 1, I think
+        // Dominator is basically making sure the Motor values are all moving proportionally and not exceeding 1
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
         double power0 = (rotY + rx - rotX) / denominator * (1 - 0.9 * speed);
