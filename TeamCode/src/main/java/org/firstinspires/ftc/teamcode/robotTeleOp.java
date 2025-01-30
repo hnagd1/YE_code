@@ -91,7 +91,7 @@ public class robotTeleOp extends OpMode {
         double lx = gamepad1.left_stick_x * 1.1;
         double ly = gamepad1.left_stick_y;
         double rx = -gamepad1.right_stick_x;
-        drive.fieldCentric(lx, ly, rx, gamepad1.right_trigger, IMUReset, telemetry);
+        drive.fieldCentric(lx, ly, rx, gamepad1.right_trigger, IMUReset, telemetry, getRuntime());
     }
 
     public void intakeSystem() {
