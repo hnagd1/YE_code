@@ -30,7 +30,7 @@ public class robotTeleOp extends OpMode {
     // Auto action adjustment varibles, these are used to adjust pos in real time
 
     public static double BUCKET_INTAKE_POS = 0.9;
-    public static int ARM_INTAKE_POS = -2300;
+    public static int ARM_INTAKE_POS = -2500;
     public static int ARM_HIGH_BASKET_POS = -3800;
     public static double BUCKET_DUMP_POS = 0.25;
     public static double BUCKET_RETRACT_POS = 0.9;
@@ -50,7 +50,7 @@ public class robotTeleOp extends OpMode {
 
     @Override
     public void loop() {
-        robotCentricDrive();
+        fieldCentricDrive();
 
         automatedActions(); //Put automated actions before others to prioritize them
         intakeSystem();
@@ -132,7 +132,7 @@ public class robotTeleOp extends OpMode {
         if (gamepad2.a) {
             ls.basketPos(BUCKET_INTAKE_POS); // TODO: Adjust this
             attachment.rotateLiftArm(1, ARM_INTAKE_POS, telemetry); // TODO: Adjust this
-            attachment.setServoPosition(1,0.63);
+            attachment.setServoPosition(1,0.066);
         }
         /**
          * Move to high basket position:
@@ -140,7 +140,7 @@ public class robotTeleOp extends OpMode {
          * After it has given the servo 1 second to move into place, it then moves the intake arm into place and lifts the slides.
          */
         if (gamepad1.a) {
-            attachment.setServoPosition(1,0.66);
+            attachment.setServoPosition(1,0.075);
             attachment.rotateLiftArm(1, ARM_HIGH_BASKET_POS, telemetry);
             lockArmTime = getRuntime();
             lockArm = true;
@@ -178,5 +178,3 @@ public class robotTeleOp extends OpMode {
         ls.stop(); //stops the linear slides
     }
 }
-
-//jack is dumb fr fr nc bbs
