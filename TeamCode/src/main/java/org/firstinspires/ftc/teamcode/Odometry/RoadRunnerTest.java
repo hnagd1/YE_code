@@ -80,21 +80,24 @@ public class RoadRunnerTest extends LinearOpMode {
             servo = hardwareMap.get(Servo.class, "Servo2");
         }
 
-        public class ready implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                servo.setPosition(0.935);
-                return false;
-            }
+        public Action ready(){
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    servo.setPosition(0.935);
+                    return false;
+                }
+            };
         }
 
-        public class dump implements Action {
-            @Override
-            public boolean run(@NonNull TelemetryPacket telemetryPacket) {
-                servo.setPosition(0.75);
-
-                return false;
-            }
+        public Action dump(){
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    servo.setPosition(0.75);
+                    return false;
+                }
+            };
         }
     }
 
@@ -105,14 +108,17 @@ public class RoadRunnerTest extends LinearOpMode {
         Ls ls = new Ls(hardwareMap);
         Bucket bucket = new Bucket(hardwareMap);
 
+        Action test;
+        test = new SequentialAction(
+                ls.extend(),
+                ls.retract());
         //TODO: Figure out stop code here
 
         waitForStart();
 
         Actions.runBlocking(
                 new SequentialAction(
-                        ls.extend(),
-                        ls.retract()
+                        test
                 )
         );
     }

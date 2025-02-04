@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-public class LinearSlide {
+public class linearSlideMethods {
     //Define Motors and Servos
     private DcMotor Motor5;
     private DcMotor Motor6;

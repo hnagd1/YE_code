@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Methods.linearSlideMethods;
 import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
@@ -25,19 +27,19 @@ public class robotTeleOp extends OpMode {
     drivingMethods drive = new drivingMethods();
     autonomousMethods auto = new autonomousMethods();
     attachmentMethods attachment = new attachmentMethods();
-    LinearSlide ls = new LinearSlide();
+    linearSlideMethods ls = new linearSlideMethods();
 
     // Auto action adjustment varibles, these are used to adjust pos in real time
 
     public static double BUCKET_INTAKE_POS = 0.9;
     public static int ARM_INTAKE_POS = -2500;
     public static int ARM_HIGH_BASKET_POS = -3800;
-    public static double BUCKET_DUMP_POS = 0.25;
+    public static double BUCKET_DUMP_POS = 0.333;
     public static double BUCKET_RETRACT_POS = 0.9;
 
     @Override
     public void init() {
-        // Allows the telemetry varibel to send data to both DS and FTC dashboard
+        // Allows the telemetry variable to send data to both DS and FTC dashboard
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
         //initialize functions with the hardware map
@@ -111,7 +113,7 @@ public class robotTeleOp extends OpMode {
         if (gamepad2.b) {
             attachment.toggleIntake(1);
         } else if (gamepad2.x) {
-            attachment.toggleIntake(-1);
+            attachment.toggleIntake(-0.5);
         } else {
             attachment.toggleIntake(0);
         }
@@ -147,7 +149,7 @@ public class robotTeleOp extends OpMode {
         }
         if ((getRuntime()-lockArmTime > 0.25)&lockArm) {
              // TODO: Adjust this
-            ls.runLinearSlide(0.7, telemetry);
+            ls.runLinearSlide(1.0, telemetry);
             lockArm = false;
         }
         /*Dump Sample and Retract slides*/
@@ -156,16 +158,17 @@ public class robotTeleOp extends OpMode {
             bucketDumpTime = getRuntime();
             bucketDump = true;
         }
-        if ((getRuntime()- bucketDumpTime > 0.5) & bucketDump) {
+        if ((getRuntime()- bucketDumpTime > 0.8) & bucketDump) {
             ls.basketPos(BUCKET_RETRACT_POS); // TODO: Adjust this
             bucketDumpTime = getRuntime();
             bucketRetract = true;
             bucketDump = false;
         }
         if ((getRuntime()- bucketDumpTime > 0.5) & bucketRetract) {
-            ls.runLinearSlide(-0.7, telemetry);
+            ls.runLinearSlide(-1.0, telemetry);
             bucketRetract = false;
         }
+
     }
 
     public void linearSlides() {

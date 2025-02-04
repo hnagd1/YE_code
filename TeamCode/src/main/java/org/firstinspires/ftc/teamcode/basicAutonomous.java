@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.Methods.linearSlideMethods;
 import org.firstinspires.ftc.teamcode.Methods.attachmentMethods;
 import org.firstinspires.ftc.teamcode.Methods.autonomousMethods;
 import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.teamcode.Methods.drivingMethods;
 public class basicAutonomous extends OpMode {
     drivingMethods drive = new drivingMethods();
     autonomousMethods auto = new autonomousMethods();
-    LinearSlide linearSlide = new LinearSlide();
+    linearSlideMethods linearSlide = new linearSlideMethods();
     attachmentMethods arm = new attachmentMethods(); //Makes instances of all the methods classes that we made so we can use the functions in them
 
     private DcMotor Motor5;
