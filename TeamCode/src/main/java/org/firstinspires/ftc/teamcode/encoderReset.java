@@ -12,7 +12,7 @@ public class encoderReset extends OpMode {
     DcMotor Motor6;
     @Override
     public void init() {
-        Motor4 = hardwareMap.get(DcMotor.class, "Motor5");
+        Motor4 = hardwareMap.get(DcMotor.class, "Motor4");
         Motor5 = hardwareMap.get(DcMotor.class, "Motor5");
         Motor6 = hardwareMap.get(DcMotor.class, "Motor6");
 
