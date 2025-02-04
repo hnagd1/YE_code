@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Methods;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -46,10 +46,10 @@ public class LinearSlide {
 
         if (LB) {
             //Set the linear slide power to 0.7 if LB is pressed to raise
-            runLinearSlide(0.7,telemetry);
+            runLinearSlide(1.0,telemetry);
         } else if (RB) {
             //Set the linear slide power to -0.7 if RB is pressed to lower
-            runLinearSlide(-0.7,telemetry);
+            runLinearSlide(-1.0,telemetry);
         } else {
             //stop the linear slides if nothing is being pressed
             runLinearSlide(0.0,telemetry);
@@ -59,13 +59,14 @@ public class LinearSlide {
 
     public void runLinearSlide(Double power, Telemetry telemetry) {
         if (power < 0) { //sets the target position based on if it is negative or positive
-            Motor5.setTargetPosition(0);
-            Motor6.setTargetPosition(0);
+            Motor5.setTargetPosition(40);
+            Motor6.setTargetPosition(50);
         } else if (power > 0) {
             Motor5.setTargetPosition(3100);
             Motor6.setTargetPosition(3100);
         }
         //sets it to the abs of power so that the power is not negative when going down
+
         Motor5.setPower(Math.abs(power));
         Motor6.setPower(Math.abs(power));
     }
