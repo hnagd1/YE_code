@@ -6,6 +6,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
 import com.acmerobotics.roadrunner.SequentialAction;
+import com.acmerobotics.roadrunner.SleepAction;
+import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -102,23 +104,31 @@ public class RoadRunnerTest extends LinearOpMode {
     }
 
 
-
     @Override
     public void runOpMode() {
         Ls ls = new Ls(hardwareMap);
         Bucket bucket = new Bucket(hardwareMap);
 
-        Action test;
-        test = new SequentialAction(
-                ls.extend(),
-                ls.retract());
+        //This is where we setup actions that require sleep
+        Action dump =
+                new SequentialAction(
+                        bucket.dump(),
+                        new SleepAction(0.8)
+                );
+
+
         //TODO: Figure out stop code here
 
         waitForStart();
+        /*
+        AFTER START
+         */
 
         Actions.runBlocking(
                 new SequentialAction(
-                        test
+                        ls.extend(),
+                        dump,
+                        ls.retract()
                 )
         );
     }
@@ -126,7 +136,7 @@ public class RoadRunnerTest extends LinearOpMode {
 
 //TODO: WHEN CODING USE THIS TEMPLATE
 /*
-public Action [INSERT NAME](){
+public Action [NAME](){
             return new Action() {
                 @Override
                 public boolean run(@NonNull TelemetryPacket packet) {
@@ -134,4 +144,8 @@ public Action [INSERT NAME](){
                 }
             };
         }
+ */
+/**
+ * Custom actions will repeat until false is returned.
+ * For servos, just return false and add in sleep later
  */
