@@ -75,6 +75,7 @@ public class RoadRunnerTest extends LinearOpMode {
         }
 
     }
+
     public static class Bucket {
         private Servo servo;
 
@@ -103,7 +104,37 @@ public class RoadRunnerTest extends LinearOpMode {
         }
     }
 
+    public static class ArmServ {
+        private Servo servo;
+    }
 
+    public static class ArmMot {
+        private DcMotor motor;
+    }
+
+    //TODO: Class code template:
+    /*
+    public static class [NAME] {
+    }
+    */
+
+    //TODO: Action code examples
+    /*
+public Action dump(){
+    return new Action() {
+        @Override
+        public boolean run(@NonNull TelemetryPacket packet) {
+            servo.setPosition(0.75);
+            return false;
+        }
+    };
+}
+     */
+
+    /**
+     * Custom actions will repeat until false is returned.
+     * For servos, just return false and add in sleep later
+     */
     @Override
     public void runOpMode() {
         Ls ls = new Ls(hardwareMap);
@@ -133,19 +164,3 @@ public class RoadRunnerTest extends LinearOpMode {
         );
     }
 }
-
-//TODO: WHEN CODING USE THIS TEMPLATE
-/*
-public Action [NAME](){
-            return new Action() {
-                @Override
-                public boolean run(@NonNull TelemetryPacket packet) {
-                    return false;
-                }
-            };
-        }
- */
-/**
- * Custom actions will repeat until false is returned.
- * For servos, just return false and add in sleep later
- */
