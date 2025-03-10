@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.acmerobotics.roadrunner.Action;
+import com.acmerobotics.roadrunner.ParallelAction;
 import com.acmerobotics.roadrunner.SequentialAction;
 import com.acmerobotics.roadrunner.SleepAction;
 import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
@@ -104,12 +105,96 @@ public class RoadRunnerTest extends LinearOpMode {
         }
     }
 
-    public static class ArmServ {
+    public static class JointServ {
         private Servo servo;
+
+        public JointServ(HardwareMap hardwareMap) {
+            servo = hardwareMap.get(Servo.class, "Servo1");
+        }
+
+        public Action dump() {
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    servo.setPosition(0.66);
+                    return false;
+                }
+            };
+        }
+
+        public Action intake() {
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    servo.setPosition(0);
+                    //TODO: find the position we actually want
+                    return false;
+                }
+            };
+        }
+
+        public Action moveOutOfWay(){
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    servo.setPosition(0.075);
+                    return false;
+                }
+            };
+        }
     }
 
     public static class ArmMot {
         private DcMotor motor;
+
+        public ArmMot(HardwareMap hardwareMap) {
+            motor = hardwareMap.get(DcMotor.class, "Motor 4");
+            motor.setDirection(DcMotorSimple.Direction.FORWARD);
+            motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setTargetPosition(0);
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        public Action dump() {
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    motor.setTargetPosition(-2500);
+                    if (-2450 > motor.getCurrentPosition() && motor.getCurrentPosition() > -2550) {
+                        motor.setPower(0);
+                        return false;
+                    } else {
+                        motor.setPower(1);
+                        return true;
+                    }
+                }
+            };
+        }
+
+        public Action intake() {
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    return false;
+                }
+            };
+
+        }
+        public Action moveOutOfWay(){
+            return new Action() {
+                @Override
+                public boolean run(@NonNull TelemetryPacket packet) {
+                    motor.setTargetPosition(-3800);
+                    if (-3750 > motor.getCurrentPosition() && motor.getCurrentPosition() > -3850) {
+                        motor.setPower(0);
+                        return false;
+                    } else {
+                        motor.setPower(1);
+                        return true;
+                    }
+                }
+            };
+        }
     }
 
     //TODO: Class code template:
@@ -124,7 +209,6 @@ public Action dump(){
     return new Action() {
         @Override
         public boolean run(@NonNull TelemetryPacket packet) {
-            servo.setPosition(0.75);
             return false;
         }
     };
@@ -139,12 +223,23 @@ public Action dump(){
     public void runOpMode() {
         Ls ls = new Ls(hardwareMap);
         Bucket bucket = new Bucket(hardwareMap);
+        JointServ jointServ = new JointServ(hardwareMap);
+        ArmMot armMot = new ArmMot(hardwareMap);
 
         //This is where we setup actions that require sleep
-        Action dump =
+        Action lsdump =
                 new SequentialAction(
                         bucket.dump(),
                         new SleepAction(0.8)
+                );
+
+        Action intakeDump =
+                new ParallelAction(
+                        new SequentialAction(
+                            jointServ.dump(),
+                            new SleepAction(1)
+                        ),
+                        armMot.dump()
                 );
 
 
@@ -158,7 +253,7 @@ public Action dump(){
         Actions.runBlocking(
                 new SequentialAction(
                         ls.extend(),
-                        dump,
+                        lsdump,
                         ls.retract()
                 )
         );
