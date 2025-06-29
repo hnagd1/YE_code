@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Odometry.messages;
+package org.firstinspires.ftc.teamcode.messages;
 
 public final class TankCommandMessage {
     public long timestamp;
